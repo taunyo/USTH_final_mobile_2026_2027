@@ -9,7 +9,7 @@ activityKtx = "1.13.0"
 constraintlayout = "2.2.2"
 recyclerview = "1.4.0"
 volley = "1.2.1"
-glide = "4.16.0"
+glide = "5.0.9"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
