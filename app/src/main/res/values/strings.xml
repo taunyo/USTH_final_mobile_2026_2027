@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">USTH Reddit</string>
 
+    <!-- Bottom navigation -->
+    <string name="nav_home">Home</string>
+    <string name="nav_search">Search</string>
+
     <!-- Page titles -->
     <string name="title_home">Popular</string>
     <string name="title_search">Search</string>
