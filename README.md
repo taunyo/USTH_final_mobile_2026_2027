@@ -4,15 +4,6 @@ Final project for the Mobile Application Development course (USTH, 2026-2027).
 
 An Android client for Reddit, written in Java. It reads Reddit's public data (popular posts, subreddits, discussions, user profiles) through the Reddit API. **No Reddit account is needed** and the app has no login page.
 
-## Team
-
-| Member | Main responsibility |
-|--------|---------------------|
-| _name_ | Home page + shared post list |
-| _name_ | Search page + Subreddit page |
-| _name_ | Discussion page |
-| _name_ | User profile page + formatting helpers |
-
 ## The 5 pages
 
 | # | Page | Class | Reddit endpoint(s) | Opened from |
