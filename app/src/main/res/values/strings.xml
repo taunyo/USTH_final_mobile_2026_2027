@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">USTH Reddit</string>
 
+    <!-- Page titles -->
+    <string name="title_home">Popular</string>
+
     <!-- Errors -->
     <string name="error_network">Network error, check your internet connection</string>
     <string name="error_http">Reddit returned an error (HTTP %1$d)</string>
