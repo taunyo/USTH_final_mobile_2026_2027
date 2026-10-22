@@ -1,8 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.USTH_final_mobile_2026_2027" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/reddit_orange</item>
+        <item name="colorOnPrimary">@color/white</item>
     </style>
 
     <style name="Theme.USTH_final_mobile_2026_2027" parent="Base.Theme.USTH_final_mobile_2026_2027" />
