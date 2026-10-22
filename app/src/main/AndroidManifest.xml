@@ -29,6 +29,9 @@
         <activity
             android:name=".ui.discussion.DiscussionActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.profile.UserProfileActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
