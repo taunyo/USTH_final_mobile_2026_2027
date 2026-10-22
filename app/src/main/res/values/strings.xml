@@ -9,6 +9,7 @@
     <string name="title_home">Popular</string>
     <string name="title_search">Search</string>
     <string name="title_subreddit">r/%1$s</string>
+    <string name="title_discussion">Discussion</string>
 
     <!-- Search -->
     <string name="search_hint">Search a subreddit</string>

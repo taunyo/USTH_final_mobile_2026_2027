@@ -26,6 +26,9 @@
         <activity
             android:name=".ui.subreddit.SubredditActivity"
             android:exported="false" />
+        <activity
+            android:name=".ui.discussion.DiscussionActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
