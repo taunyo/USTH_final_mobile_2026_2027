@@ -3,6 +3,10 @@
 
     <!-- Page titles -->
     <string name="title_home">Popular</string>
+    <string name="title_search">Search</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search a subreddit</string>
 
     <!-- Errors -->
     <string name="error_network">Network error, check your internet connection</string>
