@@ -47,8 +47,8 @@ public class UserProfileActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_posts);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO: implement RedditApi.getUser() and fill the header (avatar, karma, account age)
-        // TODO: implement RedditApi.getUserPosts() and reuse the PostAdapter of the Home page
-        // Note: deleted accounts appear as "[deleted]", don't open this page for them
+        // TODO: implement LemmyApi.getUser() and fill the header (avatar, number of posts and comments, account age)
+        // TODO: implement LemmyApi.getUserPosts() and reuse the PostAdapter of the Home page
+        // Note: a user of another instance is called "name@instance", give this full name to the API
     }
 }

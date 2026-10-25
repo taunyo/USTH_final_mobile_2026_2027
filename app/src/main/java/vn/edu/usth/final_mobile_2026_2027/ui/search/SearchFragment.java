@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import vn.edu.usth.final_mobile_2026_2027.R;
 
 /**
- * Page 2 - Search: find a subreddit by its name.
+ * Page 2 - Search: find a community by its name.
  */
 public class SearchFragment extends Fragment {
 
@@ -28,12 +28,12 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_subreddits);
+        RecyclerView recyclerView = view.findViewById(R.id.recycler_communities);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // TODO: run the search when the user presses the "search" key of the keyboard
         //       (setOnEditorActionListener on search_input)
-        // TODO: implement RedditApi.searchSubreddits() and create a SubredditAdapter
-        // TODO: open SubredditActivity.newIntent(...) when a subreddit is clicked
+        // TODO: implement LemmyApi.searchCommunities() and create a CommunityAdapter
+        // TODO: open CommunityActivity.newIntent(...) when a community is clicked
     }
 }

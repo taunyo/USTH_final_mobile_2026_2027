@@ -1,28 +1,28 @@
 package vn.edu.usth.final_mobile_2026_2027.model;
 
 /**
- * A Reddit post (called a "link" in the Reddit API, kind "t3").
+ * A post of a Lemmy community.
  */
 public class Post {
 
-    private String id;
+    private int id;
     private String title;
-    private String author;
-    private String subreddit;
-    private String selfText;      // text of the post, empty for link or image posts
-    private String url;           // where the post points to (image, article, the post itself...)
+    private String author;        // "name", or "name@instance" for a user of another instance
+    private String community;     // "name", or "name@instance" for a community of another instance
+    private String body;          // text of the post (markdown), empty for link or image posts
+    private String url;           // where the post points to (image, article...), empty for text posts
     private String thumbnailUrl;  // small preview, null when there is none
-    private String imageUrl;      // full size preview, null when there is none
-    private String permalink;     // path of the post on reddit.com, e.g. /r/android/comments/abc/...
+    private String imageUrl;      // full size image, null when there is none
+    private String permalink;     // address of the post on its own instance, e.g. https://lemmy.ml/post/123
     private int score;
     private int numComments;
     private long createdUtc;      // creation date in seconds since 01/01/1970
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -42,20 +42,20 @@ public class Post {
         this.author = author;
     }
 
-    public String getSubreddit() {
-        return subreddit;
+    public String getCommunity() {
+        return community;
     }
 
-    public void setSubreddit(String subreddit) {
-        this.subreddit = subreddit;
+    public void setCommunity(String community) {
+        this.community = community;
     }
 
-    public String getSelfText() {
-        return selfText;
+    public String getBody() {
+        return body;
     }
 
-    public void setSelfText(String selfText) {
-        this.selfText = selfText;
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public String getUrl() {

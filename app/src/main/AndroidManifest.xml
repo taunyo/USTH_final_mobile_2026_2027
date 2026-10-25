@@ -24,7 +24,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.subreddit.SubredditActivity"
+            android:name=".ui.community.CommunityActivity"
             android:exported="false" />
         <activity
             android:name=".ui.discussion.DiscussionActivity"

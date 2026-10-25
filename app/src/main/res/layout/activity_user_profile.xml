@@ -15,7 +15,7 @@
         app:navigationIcon="@drawable/ic_arrow_back"
         tools:title="u/username" />
 
-    <!-- TODO: header with the avatar, the karma and the age of the account -->
+    <!-- TODO: header with the avatar, the number of posts and comments and the age of the account -->
 
     <FrameLayout
         android:layout_width="match_parent"

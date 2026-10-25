@@ -1,23 +1,23 @@
 package vn.edu.usth.final_mobile_2026_2027.model;
 
 /**
- * A comment of a discussion (kind "t1" in the Reddit API).
+ * A comment of a discussion.
  * The comment tree is stored as a flat list: the depth tells how far a reply is indented.
  */
 public class Comment {
 
-    private String id;
-    private String author;
-    private String body;
+    private int id;
+    private String author;    // "name", or "name@instance" for a user of another instance
+    private String body;      // text of the comment (markdown)
     private int score;
     private long createdUtc;  // creation date in seconds since 01/01/1970
     private int depth;        // 0 for a direct answer to the post, 1 for a reply to it, etc.
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 

@@ -17,41 +17,43 @@ import java.util.Map;
 
 import vn.edu.usth.final_mobile_2026_2027.R;
 import vn.edu.usth.final_mobile_2026_2027.model.Comment;
+import vn.edu.usth.final_mobile_2026_2027.model.Community;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
-import vn.edu.usth.final_mobile_2026_2027.model.Subreddit;
 import vn.edu.usth.final_mobile_2026_2027.model.User;
 
 /**
- * Single entry point to call the Reddit API. Every screen goes through this class.
+ * Single entry point to call the Lemmy API. Every screen goes through this class.
  *
  * Usage from an Activity or a Fragment:
  * <pre>
- * RedditApi.getInstance(this).getPopularPosts(new ApiCallback&lt;List&lt;Post&gt;&gt;() { ... });
+ * LemmyApi.getInstance(this).getPopularPosts(new ApiCallback&lt;List&lt;Post&gt;&gt;() { ... });
  * </pre>
  *
- * The public API works by adding ".json" at the end of a reddit.com url,
- * e.g. https://www.reddit.com/r/android.json (see the README for the list of endpoints).
+ * Lemmy is made of many servers ("instances") that share their communities. The app reads
+ * everything through the public API of one instance, e.g. https://lemmy.world/api/v3/post/list
+ * (see the README for the list of endpoints). No account and no API key are needed.
  */
-public class RedditApi {
+public class LemmyApi {
 
-    private static final String BASE_URL = "https://www.reddit.com";
-    // Reddit refuses requests that don't have a descriptive User-Agent
-    private static final String USER_AGENT = "android:vn.edu.usth.final_mobile_2026_2027:v1.0 (USTH student project)";
+    // Lemmy 0.19 instance used by the app. To use another instance, only change this line.
+    private static final String BASE_URL = "https://lemmy.world/api/v3";
+    // Lemmy doesn't require it, but it tells the admins of the instance who sends the requests
+    private static final String USER_AGENT = "USTH-Lemmy/1.0 (Android, USTH student project)";
 
-    private static RedditApi instance;
+    private static LemmyApi instance;
 
     private final Context context;
     private final RequestQueue queue;
 
-    private RedditApi(Context context) {
+    private LemmyApi(Context context) {
         this.context = context.getApplicationContext();
         this.queue = Volley.newRequestQueue(this.context);
     }
 
-    /** Only one RedditApi (and one Volley queue) is created for the whole app. */
-    public static synchronized RedditApi getInstance(Context context) {
+    /** Only one LemmyApi (and one Volley queue) is created for the whole app. */
+    public static synchronized LemmyApi getInstance(Context context) {
         if (instance == null) {
-            instance = new RedditApi(context);
+            instance = new LemmyApi(context);
         }
         return instance;
     }
@@ -61,15 +63,15 @@ public class RedditApi {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Posts of the home feed: GET /r/popular/hot.json
+     * Posts of the home feed, from all the communities: GET /post/list?type_=All&sort=Hot
      * This method is the example to follow for the other ones.
      */
     public void getPopularPosts(ApiCallback<List<Post>> callback) {
-        String url = BASE_URL + "/r/popular/hot.json?raw_json=1";
+        String url = BASE_URL + "/post/list?type_=All&sort=Hot&limit=20";
 
         get(url, response -> {
             try {
-                callback.onSuccess(RedditParser.parsePosts(response));
+                callback.onSuccess(LemmyParser.parsePosts(response));
             } catch (JSONException e) {
                 callback.onError(context.getString(R.string.error_parsing));
             }
@@ -80,34 +82,40 @@ public class RedditApi {
     // Search
     // ---------------------------------------------------------------------------------------------
 
-    /** Subreddits matching a text: GET /subreddits/search.json?q={query} */
-    public void searchSubreddits(String query, ApiCallback<List<Subreddit>> callback) {
+    /** Communities matching a text: GET /search?q={query}&type_=Communities&listing_type=All */
+    public void searchCommunities(String query, ApiCallback<List<Community>> callback) {
         // TODO (Search page): encode the query with Uri.encode() and parse the result
     }
 
     // ---------------------------------------------------------------------------------------------
-    // Subreddit
+    // Community
     // ---------------------------------------------------------------------------------------------
 
-    /** Information about a subreddit: GET /r/{name}/about.json */
-    public void getSubreddit(String name, ApiCallback<Subreddit> callback) {
-        // TODO (Subreddit page)
+    /** Information about a community: GET /community?name={name} */
+    public void getCommunity(String name, ApiCallback<Community> callback) {
+        // TODO (Community page)
     }
 
-    /** Posts of a subreddit: GET /r/{name}/hot.json (also /new.json, /top.json) */
-    public void getSubredditPosts(String name, ApiCallback<List<Post>> callback) {
-        // TODO (Subreddit page)
+    /** Posts of a community: GET /post/list?community_name={name}&sort=Hot (also New, TopDay...) */
+    public void getCommunityPosts(String name, ApiCallback<List<Post>> callback) {
+        // TODO (Community page)
     }
 
     // ---------------------------------------------------------------------------------------------
     // Discussion
     // ---------------------------------------------------------------------------------------------
 
+    /** A post alone: GET /post?id={postId} */
+    public void getPost(int postId, ApiCallback<Post> callback) {
+        // TODO (Discussion page)
+    }
+
     /**
-     * Comments of a post: GET /comments/{postId}.json
-     * The answer is a JSON array: [0] contains the post, [1] contains the comments.
+     * Comments of a post: GET /comment/list?post_id={postId}&max_depth=8
+     * The comments come as a flat list in no particular order: the "path" of each comment
+     * tells where it is in the tree (see the README).
      */
-    public void getComments(String postId, ApiCallback<List<Comment>> callback) {
+    public void getComments(int postId, ApiCallback<List<Comment>> callback) {
         // TODO (Discussion page)
     }
 
@@ -115,12 +123,12 @@ public class RedditApi {
     // User profile
     // ---------------------------------------------------------------------------------------------
 
-    /** Public information about a user: GET /user/{username}/about.json */
+    /** Public information about a user: GET /user?username={username}, in "person_view" */
     public void getUser(String username, ApiCallback<User> callback) {
         // TODO (Profile page)
     }
 
-    /** Posts written by a user: GET /user/{username}/submitted.json */
+    /** Posts written by a user: GET /user?username={username}&sort=New, in "posts" */
     public void getUserPosts(String username, ApiCallback<List<Post>> callback) {
         // TODO (Profile page)
     }

@@ -1,13 +1,14 @@
 package vn.edu.usth.final_mobile_2026_2027.model;
 
 /**
- * Public information about a Reddit account (kind "t2" in the Reddit API).
+ * Public information about a Lemmy account.
+ * Lemmy doesn't publish the karma of its users: the profile shows their number of posts and comments.
  */
 public class User {
 
-    private String name;         // name without the "u/" prefix
-    private int linkKarma;       // karma earned with posts
-    private int commentKarma;    // karma earned with comments
+    private String name;         // "name", or "name@instance" for a user of another instance
+    private int postCount;
+    private int commentCount;
     private long createdUtc;     // account creation date in seconds since 01/01/1970
     private String iconUrl;      // null when the user has no avatar
 
@@ -19,20 +20,20 @@ public class User {
         this.name = name;
     }
 
-    public int getLinkKarma() {
-        return linkKarma;
+    public int getPostCount() {
+        return postCount;
     }
 
-    public void setLinkKarma(int linkKarma) {
-        this.linkKarma = linkKarma;
+    public void setPostCount(int postCount) {
+        this.postCount = postCount;
     }
 
-    public int getCommentKarma() {
-        return commentKarma;
+    public int getCommentCount() {
+        return commentCount;
     }
 
-    public void setCommentKarma(int commentKarma) {
-        this.commentKarma = commentKarma;
+    public void setCommentCount(int commentCount) {
+        this.commentCount = commentCount;
     }
 
     public long getCreatedUtc() {

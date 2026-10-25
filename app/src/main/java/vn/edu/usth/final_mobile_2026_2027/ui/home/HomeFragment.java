@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import vn.edu.usth.final_mobile_2026_2027.R;
 
 /**
- * Page 1 - Home: feed of the popular posts (r/popular).
+ * Page 1 - Home: feed of the popular posts of all the communities.
  */
 public class HomeFragment extends Fragment {
 
@@ -31,8 +31,8 @@ public class HomeFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.recycler_posts);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        // TODO: create a PostAdapter in ui/common (the Subreddit and Profile pages use it too)
-        // TODO: load the posts with RedditApi.getInstance(requireContext()).getPopularPosts(...)
+        // TODO: create a PostAdapter in ui/common (the Community and Profile pages use it too)
+        // TODO: load the posts with LemmyApi.getInstance(requireContext()).getPopularPosts(...)
         //       and show progress_bar while waiting
         // TODO: open DiscussionActivity.newIntent(...) when a post is clicked
     }

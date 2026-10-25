@@ -25,7 +25,7 @@ public class DiscussionActivity extends AppCompatActivity {
      * Creates the Intent to open this page, e.g.
      * startActivity(DiscussionActivity.newIntent(context, post.getId()));
      */
-    public static Intent newIntent(Context context, String postId) {
+    public static Intent newIntent(Context context, int postId) {
         Intent intent = new Intent(context, DiscussionActivity.class);
         intent.putExtra(EXTRA_POST_ID, postId);
         return intent;
@@ -38,7 +38,7 @@ public class DiscussionActivity extends AppCompatActivity {
         setContentView(R.layout.activity_discussion);
         ViewUtils.applySystemBarsPadding(findViewById(R.id.main));
 
-        String postId = getIntent().getStringExtra(EXTRA_POST_ID);
+        int postId = getIntent().getIntExtra(EXTRA_POST_ID, 0);
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
@@ -46,8 +46,8 @@ public class DiscussionActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_comments);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        // TODO: implement RedditApi.getComments(postId, ...) and RedditParser.parseComments()
+        // TODO: implement LemmyApi.getPost(postId, ...) and show the post (title, text, image) above the comments
+        // TODO: implement LemmyApi.getComments(postId, ...) and LemmyParser.parseComments()
         // TODO: create a CommentAdapter, indent each comment according to comment.getDepth()
-        // TODO: show the post itself (title, text, image) above the comments
     }
 }

@@ -3,7 +3,7 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- Reddit orange, used as the main color of the app -->
-    <color name="reddit_orange">#FFFF4500</color>
-    <color name="reddit_orange_light">#FFFF8A5C</color>
+    <!-- Lemmy green, used as the main color of the app -->
+    <color name="lemmy_green">#FF007A5E</color>
+    <color name="lemmy_green_light">#FF00BC8C</color>
 </resources>

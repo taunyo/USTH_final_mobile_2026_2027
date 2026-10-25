@@ -6,14 +6,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".ui.subreddit.SubredditActivity">
+    tools:context=".ui.community.CommunityActivity">
 
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         app:navigationIcon="@drawable/ic_arrow_back"
-        tools:title="r/android" />
+        tools:title="c/technology" />
 
     <!-- TODO: header with the icon, the title, the number of members and the description -->
 

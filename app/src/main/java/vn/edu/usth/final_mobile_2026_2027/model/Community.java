@@ -1,15 +1,15 @@
 package vn.edu.usth.final_mobile_2026_2027.model;
 
 /**
- * A community of Reddit, like r/android (kind "t5" in the Reddit API).
+ * A Lemmy community, like c/technology.
  */
-public class Subreddit {
+public class Community {
 
-    private String name;         // name without the "r/" prefix, e.g. "android"
+    private String name;         // "technology", or "technology@lemmy.ml" for a community of another instance
     private String title;
-    private String description;
+    private String description;  // markdown
     private long subscribers;
-    private String iconUrl;      // null when the subreddit has no icon
+    private String iconUrl;      // null when the community has no icon
 
     public String getName() {
         return name;
