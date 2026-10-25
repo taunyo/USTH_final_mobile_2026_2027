@@ -22,6 +22,15 @@
     <string name="time_days">%1$dd ago</string>
     <string name="time_months">%1$dmo ago</string>
     <string name="time_years">%1$dy ago</string>
+    <!-- %1$s is a number already formatted by FormatUtils.formatCount(), e.g. "1.2k" -->
+    <plurals name="post_points">
+        <item quantity="one">%1$s point</item>
+        <item quantity="other">%1$s points</item>
+    </plurals>
+    <plurals name="post_comments">
+        <item quantity="one">%1$s comment</item>
+        <item quantity="other">%1$s comments</item>
+    </plurals>
 
     <!-- Errors -->
     <string name="retry">Retry</string>
