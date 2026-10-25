@@ -58,7 +58,12 @@ public class LemmyParser {
         post.setScore(counts.optInt("score"));
         post.setNumComments(counts.optInt("comments"));
         post.setCreatedUtc(getDate(data, "published"));
-        // TODO: fill imageUrl with url when url_content_type starts with "image/"
+
+        // For an image post, url is the full size image (url_content_type is e.g. "image/jpeg").
+        // For a link post it is a web page ("text/html"): no image then.
+        if (getString(data, "url_content_type").startsWith("image/")) {
+            post.setImageUrl(getString(data, "url"));
+        }
         return post;
     }
 

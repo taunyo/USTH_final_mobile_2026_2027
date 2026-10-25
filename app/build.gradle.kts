@@ -41,6 +41,8 @@ dependencies {
     implementation(libs.volley)
     implementation(libs.glide)
     testImplementation(libs.junit)
+    // The org.json of Android only works on a phone: local unit tests need the real library
+    testImplementation(libs.json)
     androidTestImplementation(libs.espresso.core)
     androidTestImplementation(libs.ext.junit)
 }
