@@ -16,6 +16,7 @@
     <string name="search_hint">Search a community</string>
 
     <!-- Post list -->
+    <string name="empty_posts">No posts yet</string>
     <string name="time_now">just now</string>
     <string name="time_minutes">%1$dm ago</string>
     <string name="time_hours">%1$dh ago</string>

@@ -29,6 +29,12 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
+
+        <!-- Error message + "Retry", or "No posts yet" (see ui/common/ErrorView) -->
+        <include
+            android:id="@+id/error_view"
+            layout="@layout/view_error"
+            android:visibility="gone" />
     </FrameLayout>
 
 </LinearLayout>
