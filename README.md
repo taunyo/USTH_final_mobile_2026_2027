@@ -211,6 +211,7 @@ adapter.addPosts(posts);  // adds the next page at the end (infinite scroll)
 // utils/FormatUtils (A), used by everyone
 FormatUtils.formatTimeAgo(context, createdUtc);  // "5h ago", "3y ago"
 FormatUtils.formatCount(1234);                   // "1.2k"
+FormatUtils.shortName("technology@lemmy.ml");    // "technology" (to display only, the pages need the full name)
 ```
 
 ```xml
