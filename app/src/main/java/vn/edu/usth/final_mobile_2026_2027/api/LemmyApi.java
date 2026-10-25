@@ -2,15 +2,18 @@ package vn.edu.usth.final_mobile_2026_2027.api;
 
 import android.content.Context;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -151,8 +154,23 @@ public class LemmyApi {
                 headers.put("User-Agent", USER_AGENT);
                 return headers;
             }
+
+            @Override
+            protected Response<String> parseNetworkResponse(NetworkResponse response) {
+                return Response.success(readText(response),
+                        HttpHeaderParser.parseCacheHeaders(response));
+            }
         };
         queue.add(request);
+    }
+
+    /**
+     * Returns the text of an answer. JSON is always UTF-8, but Lemmy doesn't say it
+     * ("Content-Type: application/json" without charset), and then StringRequest reads it
+     * as ISO-8859-1: "Musk’s" would become "Muskâ€™s". So we always read it as UTF-8.
+     */
+    static String readText(NetworkResponse response) {
+        return new String(response.data, StandardCharsets.UTF_8);
     }
 
     private String getErrorMessage(VolleyError error) {
