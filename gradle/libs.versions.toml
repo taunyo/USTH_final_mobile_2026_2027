@@ -10,7 +10,7 @@ constraintlayout = "2.2.2"
 recyclerview = "1.4.0"
 volley = "1.2.1"
 glide = "5.0.9"
-json = "20240303"
+json = "20260814"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
