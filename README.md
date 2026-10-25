@@ -223,6 +223,14 @@ FormatUtils.shortName("technology@lemmy.ml");    // "technology" (to display onl
 <!-- it contains the TextView error_message and the Button retry_button -->
 ```
 
+```java
+// ui/common/ErrorView (A) shows and hides it
+ErrorView errorView = new ErrorView(view.findViewById(R.id.error_view));
+errorView.showError(message, this::loadPosts);  // message + "Retry" button that calls loadPosts()
+errorView.showEmpty(message);                   // message only, e.g. "No posts yet"
+errorView.hide();
+```
+
 ### Phase 0: everyone
 
 - [ ] **Everyone**: clone the project, run the app on an Android 17 emulator, open https://lemmy.world/api/v3/post/list?type_=All&sort=Hot&limit=5 in a browser to see what Lemmy answers
@@ -297,7 +305,7 @@ Final checklist (checked by D):
 - **Language**: code, comments and commit messages in English.
 - **Commits**: one commit per logical change, in the form `type(scope): description`
   - types: `feat`, `fix`, `refactor`, `style`, `docs`, `test`, `build`, `chore`
-  - scopes: `home`, `search`, `community`, `discussion`, `profile`, `api`, `model`, `utils`
+  - scopes: `home`, `search`, `community`, `discussion`, `profile`, `common` (shared code of `ui/common`), `api`, `model`, `utils`
   - example: `feat(discussion): indent replies according to their depth`
 - **Branches**: one branch per feature (`feature/home-feed`, `feature/comments`...), merged into `main` with a pull request. Pull `main` often to avoid big conflicts.
 - Every text displayed to the user goes in `res/values/strings.xml`.
