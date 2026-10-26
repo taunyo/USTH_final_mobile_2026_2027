@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The post at the top of a discussion, filled by ui/discussion/CommentAdapter -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?attr/colorSurfaceContainer"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Community and its instance -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/header_community"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorPrimary"
+            android:textStyle="bold"
+            tools:text="c/android" />
+
+        <TextView
+            android:id="@+id/header_instance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="\@lemmy.ml" />
+    </LinearLayout>
+
+    <!-- Author and date -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/header_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="by username" />
+
+        <TextView
+            android:id="@+id/header_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="· 3h ago" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:textAppearance="?attr/textAppearanceTitleLarge"
+        android:textStyle="bold"
+        tools:text="Post title, on two lines if needed, bold and fairly large" />
+
+    <!-- Hidden by the adapter when the post has no image -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/header_image_card"
+        style="@style/Widget.Material3.CardView.Outlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        app:strokeColor="?attr/colorOutlineVariant"
+        app:strokeWidth="1dp"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/header_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:importantForAccessibility="no"
+            android:maxHeight="400dp"
+            android:scaleType="centerCrop"
+            tools:src="@tools:sample/backgrounds/scenic" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Hidden by the adapter when the post has no text -->
+    <TextView
+        android:id="@+id/header_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:lineSpacingMultiplier="1.2"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:visibility="gone"
+        tools:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam id est tempor, efficitur eros vitae."
+        tools:visibility="visible" />
+
+    <!-- Hidden by the adapter when the post has no link. A click opens the browser -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/header_link_card"
+        style="@style/Widget.Material3.CardView.Outlined"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:visibility="gone"
+        app:strokeColor="?attr/colorOutline"
+        app:strokeWidth="1dp"
+        tools:visibility="visible">
+
+        <TextView
+            android:id="@+id/header_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:padding="12dp"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorPrimary"
+            tools:text="🔗 example.com/linked-article" />
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Score and number of comments -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/header_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="▲ 1.2k ▼" />
+
+        <TextView
+            android:id="@+id/header_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            tools:text="💬 67 comments" />
+    </LinearLayout>
+
+</LinearLayout>
