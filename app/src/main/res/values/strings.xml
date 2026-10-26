@@ -14,6 +14,11 @@
 
     <!-- Search -->
     <string name="search_hint">Search a community</string>
+    <!-- %1$s is a number already formatted by FormatUtils.formatCount(), e.g. "1.2k" -->
+    <plurals name="community_members">
+        <item quantity="one">%1$s member</item>
+        <item quantity="other">%1$s members</item>
+    </plurals>
 
     <!-- Post list -->
     <string name="empty_posts">No posts yet</string>
