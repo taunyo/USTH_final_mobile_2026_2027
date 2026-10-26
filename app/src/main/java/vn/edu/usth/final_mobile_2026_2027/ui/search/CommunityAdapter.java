@@ -18,6 +18,7 @@ import java.util.List;
 
 import vn.edu.usth.final_mobile_2026_2027.R;
 import vn.edu.usth.final_mobile_2026_2027.model.Community;
+import vn.edu.usth.final_mobile_2026_2027.ui.community.CommunityActivity;
 import vn.edu.usth.final_mobile_2026_2027.utils.FormatUtils;
 
 /**
@@ -29,6 +30,7 @@ import vn.edu.usth.final_mobile_2026_2027.utils.FormatUtils;
  * recyclerView.setAdapter(adapter);
  * adapter.setCommunities(communities);  // replaces the list
  * </pre>
+ * The adapter opens the pages itself: a click on a community opens its page.
  */
 public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.CommunityViewHolder> {
 
@@ -100,6 +102,10 @@ public class CommunityAdapter extends RecyclerView.Adapter<CommunityAdapter.Comm
             }
 
             showIcon(community.getIconUrl());
+
+            // v.getContext() is the activity that shows the list. The page needs the full name
+            itemView.setOnClickListener(v ->
+                    v.getContext().startActivity(CommunityActivity.newIntent(v.getContext(), community.getName())));
         }
 
         private void showIcon(String url) {

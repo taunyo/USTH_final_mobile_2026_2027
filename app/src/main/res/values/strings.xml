@@ -14,6 +14,7 @@
 
     <!-- Search -->
     <string name="search_hint">Search a community</string>
+    <string name="empty_communities">No community found</string>
     <!-- %1$s is a number already formatted by FormatUtils.formatCount(), e.g. "1.2k" -->
     <plurals name="community_members">
         <item quantity="one">%1$s member</item>
