@@ -55,7 +55,14 @@ public class LemmyParser {
         return communities;
     }
 
-    // TODO (Community page): parseCommunity(String json) for /community, the view is in "community_view"
+    /**
+     * Parses the information about a community: { "community_view": { community view }, ... }
+     * It is the same view as in the search.
+     */
+    public static Community parseCommunity(String json) throws JSONException {
+        return parseCommunity(new JSONObject(json).getJSONObject("community_view"));
+    }
+
     // TODO (Discussion page): parsePost(String json) for /post, the view is in "post_view"
     // TODO (Discussion page): parseComments(String json), rebuild the tree with the "path" of each comment
     // TODO (Profile page): parseUser(String json) for /user, the view is in "person_view"

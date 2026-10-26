@@ -108,9 +108,20 @@ public class LemmyApi {
     // Community
     // ---------------------------------------------------------------------------------------------
 
-    /** Information about a community: GET /community?name={name} */
+    /**
+     * Information about a community: GET /community?name={name}
+     * An unknown community gives an HTTP 404 error.
+     */
     public void getCommunity(String name, ApiCallback<Community> callback) {
-        // TODO (Community page)
+        String url = BASE_URL + "/community?name=" + name;
+
+        get(url, response -> {
+            try {
+                callback.onSuccess(LemmyParser.parseCommunity(response));
+            } catch (JSONException e) {
+                callback.onError(context.getString(R.string.error_parsing));
+            }
+        }, callback);
     }
 
     /** Posts of a community: GET /post/list?community_name={name}&sort=Hot (also New, TopDay...) */
