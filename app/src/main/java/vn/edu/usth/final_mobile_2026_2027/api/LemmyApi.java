@@ -1,6 +1,7 @@
 package vn.edu.usth.final_mobile_2026_2027.api;
 
 import android.content.Context;
+import android.net.Uri;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -85,9 +86,22 @@ public class LemmyApi {
     // Search
     // ---------------------------------------------------------------------------------------------
 
-    /** Communities matching a text: GET /search?q={query}&type_=Communities&listing_type=All */
+    /**
+     * Communities matching a text: GET /search?q={query}&type_=Communities&listing_type=All&sort=TopAll
+     * sort=TopAll puts the biggest communities first.
+     */
     public void searchCommunities(String query, ApiCallback<List<Community>> callback) {
-        // TODO (Search page): encode the query with Uri.encode() and parse the result
+        // The text can contain spaces or accents: Uri.encode() makes it safe to put in the url
+        String url = BASE_URL + "/search?q=" + Uri.encode(query)
+                + "&type_=Communities&listing_type=All&sort=TopAll";
+
+        get(url, response -> {
+            try {
+                callback.onSuccess(LemmyParser.parseCommunities(response));
+            } catch (JSONException e) {
+                callback.onError(context.getString(R.string.error_parsing));
+            }
+        }, callback);
     }
 
     // ---------------------------------------------------------------------------------------------

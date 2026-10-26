@@ -10,6 +10,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import vn.edu.usth.final_mobile_2026_2027.model.Community;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
 
 /**
@@ -36,7 +37,24 @@ public class LemmyParser {
         return posts;
     }
 
-    // TODO (Search page): parseCommunities(String json) for /search, the views are in "communities"
+    /**
+     * Parses the communities found by a search: { "communities": [ community views... ], ... }
+     * The NSFW communities are skipped.
+     */
+    public static List<Community> parseCommunities(String json) throws JSONException {
+        JSONArray views = new JSONObject(json).getJSONArray("communities");
+
+        List<Community> communities = new ArrayList<>();
+        for (int i = 0; i < views.length(); i++) {
+            JSONObject view = views.getJSONObject(i);
+            if (view.getJSONObject("community").optBoolean("nsfw")) {
+                continue;
+            }
+            communities.add(parseCommunity(view));
+        }
+        return communities;
+    }
+
     // TODO (Community page): parseCommunity(String json) for /community, the view is in "community_view"
     // TODO (Discussion page): parsePost(String json) for /post, the view is in "post_view"
     // TODO (Discussion page): parseComments(String json), rebuild the tree with the "path" of each comment
@@ -65,6 +83,23 @@ public class LemmyParser {
             post.setImageUrl(getString(data, "url"));
         }
         return post;
+    }
+
+    /**
+     * A community view: { "community": { ... }, "counts": { "subscribers": ... }, ... }
+     * The search and the community page both return it.
+     */
+    private static Community parseCommunity(JSONObject view) throws JSONException {
+        JSONObject data = view.getJSONObject("community");
+        JSONObject counts = view.getJSONObject("counts");
+
+        Community community = new Community();
+        community.setName(getFullName(data));
+        community.setTitle(getString(data, "title"));
+        community.setDescription(getString(data, "description"));
+        community.setSubscribers(counts.optLong("subscribers"));
+        community.setIconUrl(getImageUrl(data, "icon"));
+        return community;
     }
 
     /**
