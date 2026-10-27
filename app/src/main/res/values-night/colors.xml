@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Discussion: darker versions of the comment backgrounds for the dark mode -->
+    <color name="comment_background_even">#FF1C1B1F</color>
+    <color name="comment_background_odd">#FF1B2B26</color>
+</resources>

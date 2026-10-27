@@ -6,4 +6,8 @@
     <!-- Lemmy green, used as the main color of the app -->
     <color name="lemmy_green">#FF007A5E</color>
     <color name="lemmy_green_light">#FF00BC8C</color>
+
+    <!-- Discussion: background of the comments, alternated with their depth -->
+    <color name="comment_background_even">#FFFFFFFF</color>
+    <color name="comment_background_odd">#FFE6F4EF</color>
 </resources>
