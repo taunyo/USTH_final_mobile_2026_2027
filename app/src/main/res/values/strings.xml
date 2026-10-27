@@ -61,5 +61,10 @@
     <string name="error_http">Lemmy returned an error (HTTP %1$d)</string>
     <string name="error_parsing">Unexpected answer from Lemmy</string>
 
+    <!-- User profile -->
+    <string name="user_member_since">Member since %1$s</string>
+    <string name="user_posts_count">Posts: %1$s</string>
+    <string name="user_comments_count">Comments: %1$s</string>
+    <string name="user_banned">Banned</string>
 
 </resources>
