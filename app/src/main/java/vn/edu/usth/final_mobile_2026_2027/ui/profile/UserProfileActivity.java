@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import vn.edu.usth.final_mobile_2026_2027.api.ApiCallback;
 import vn.edu.usth.final_mobile_2026_2027.api.LemmyApi;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
 import vn.edu.usth.final_mobile_2026_2027.model.User;
+import vn.edu.usth.final_mobile_2026_2027.ui.common.EndlessScrollListener;
 import vn.edu.usth.final_mobile_2026_2027.ui.common.ErrorView;
 import vn.edu.usth.final_mobile_2026_2027.ui.common.PostAdapter;
 import vn.edu.usth.final_mobile_2026_2027.utils.FormatUtils;
@@ -39,6 +41,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private PostAdapter adapter;
     private ProgressBar progressBar;
     private ErrorView errorView;
+    private EndlessScrollListener scrollListener;
 
     private ShapeableImageView avatarImage;
     private TextView usernameText;
@@ -84,6 +87,14 @@ public class UserProfileActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.recycler_posts);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        scrollListener = new EndlessScrollListener() {
+            @Override
+            protected void onLoadMore(int page) {
+                loadMoreUserPosts(page);
+            }
+        };
+        recyclerView.addOnScrollListener(scrollListener);
 
         loadUser();
     }
@@ -141,7 +152,10 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void loadUserPosts() {
-        LemmyApi.getInstance(this).getUserPosts(username, new ApiCallback<List<Post>>() {
+        progressBar.setVisibility(View.VISIBLE);
+        errorView.hide();
+
+        LemmyApi.getInstance(this).getUserPosts(username, 1, new ApiCallback<List<Post>>() {
             @Override
             public void onSuccess(List<Post> posts) {
                 if (isFinishing() || isDestroyed()) {
@@ -149,6 +163,7 @@ public class UserProfileActivity extends AppCompatActivity {
                 }
                 progressBar.setVisibility(View.GONE);
                 adapter.setPosts(posts);
+                scrollListener.reset();
                 if (posts.isEmpty()) {
                     errorView.showEmpty(getString(R.string.empty_posts));
                 }
@@ -160,7 +175,28 @@ public class UserProfileActivity extends AppCompatActivity {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
-                errorView.showError(message, () -> loadUser());
+                errorView.showError(message, () -> loadUserPosts());
+            }
+        });
+    }
+
+    private void loadMoreUserPosts(int page) {
+        LemmyApi.getInstance(this).getUserPosts(username, page, new ApiCallback<List<Post>>() {
+            @Override
+            public void onSuccess(List<Post> posts) {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                adapter.addPosts(posts);
+                scrollListener.onPageLoaded(posts.isEmpty());
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                Toast.makeText(UserProfileActivity.this, message, Toast.LENGTH_SHORT).show();
             }
         });
     }
