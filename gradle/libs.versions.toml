@@ -11,6 +11,7 @@ recyclerview = "1.4.0"
 volley = "1.2.1"
 glide = "5.0.9"
 json = "20260814"
+swiperefreshlayout = "1.2.0"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -24,6 +25,7 @@ recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version
 volley = { group = "com.android.volley", name = "volley", version.ref = "volley" }
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 json = { group = "org.json", name = "json", version.ref = "json" }
+swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

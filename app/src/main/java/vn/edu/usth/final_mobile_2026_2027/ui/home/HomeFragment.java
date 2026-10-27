@@ -11,7 +11,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.usth.final_mobile_2026_2027.R;
@@ -29,6 +31,7 @@ public class HomeFragment extends Fragment {
     private RecyclerView recyclerView;
     private PostAdapter adapter;
     private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefresh;
     private ErrorView errorView;
 
     @Override
@@ -50,7 +53,11 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
 
-        loadPosts();
+        // Pull to refresh: the circle of the SwipeRefreshLayout replaces the progress bar
+        swipeRefresh = view.findViewById(R.id.swipe_refresh);
+        swipeRefresh.setOnRefreshListener(() -> loadPosts(true));
+
+        loadPosts(false);
     }
 
     /** Goes back to the first post, e.g. when the user taps the Home tab again. */
@@ -61,8 +68,11 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void loadPosts() {
-        progressBar.setVisibility(View.VISIBLE);
+    /** @param refreshing true for a pull to refresh: its circle is already shown */
+    private void loadPosts(boolean refreshing) {
+        if (!refreshing) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         errorView.hide();
 
         LemmyApi.getInstance(requireContext()).getPopularPosts(new ApiCallback<List<Post>>() {
@@ -73,6 +83,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 adapter.setPosts(posts);
                 if (posts.isEmpty()) {
                     errorView.showEmpty(getString(R.string.empty_posts));
@@ -85,8 +96,12 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
+                // After a pull to refresh the old posts are still there: remove them,
+                // otherwise the error message is drawn on top of them
+                adapter.setPosts(new ArrayList<>());
                 // "Retry" loads the posts again
-                errorView.showError(message, HomeFragment.this::loadPosts);
+                errorView.showError(message, () -> loadPosts(false));
             }
         });
     }
