@@ -3,28 +3,33 @@ package vn.edu.usth.final_mobile_2026_2027.ui.discussion;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.GradientDrawable;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.color.MaterialColors;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import vn.edu.usth.final_mobile_2026_2027.R;
 import vn.edu.usth.final_mobile_2026_2027.model.Comment;
-import vn.edu.usth.final_mobile_2026_2027.model.Community;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
 import vn.edu.usth.final_mobile_2026_2027.ui.community.CommunityActivity;
 import vn.edu.usth.final_mobile_2026_2027.ui.profile.UserProfileActivity;
@@ -34,7 +39,12 @@ import vn.edu.usth.final_mobile_2026_2027.utils.FormatUtils;
 public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Post post;
+    /** All the comments, in the order of the tree. */
     private final List<Comment> comments = new ArrayList<>();
+    /** The comments really shown: the replies of a folded comment are left out. */
+    private final List<Comment> visibleComments = new ArrayList<>();
+    /** The ids of the folded comments. */
+    private final Set<Integer> collapsedIds = new HashSet<>();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_COMMENT = 1;
 
@@ -50,7 +60,53 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void setComments(List<Comment> newComments){
         comments.clear();
         comments.addAll(newComments);
+        collapsedIds.clear();
+        updateVisibleComments();
         notifyDataSetChanged();
+    }
+
+    /** Folds the comment if it is open, opens it if it is folded. */
+    @SuppressLint("NotifyDataSetChanged")
+    private void toggleCollapse(Comment comment) {
+        if (collapsedIds.contains(comment.getId())) {
+            collapsedIds.remove(comment.getId());
+        } else {
+            collapsedIds.add(comment.getId());
+        }
+        updateVisibleComments();
+        notifyDataSetChanged();
+    }
+
+    /**
+     * Rebuilds visibleComments. The comments are in the order of the tree, so the replies
+     * of a comment are the comments right after it that are deeper.
+     */
+    private void updateVisibleComments() {
+        visibleComments.clear();
+        // Depth of the folded comment whose replies are being skipped, -1 if none
+        int hiddenBelowDepth = -1;
+        for (Comment comment : comments) {
+            if (hiddenBelowDepth != -1 && comment.getDepth() > hiddenBelowDepth) {
+                continue;
+            }
+            hiddenBelowDepth = -1;
+            visibleComments.add(comment);
+            if (collapsedIds.contains(comment.getId())) {
+                hiddenBelowDepth = comment.getDepth();
+            }
+        }
+    }
+
+    /** Number of replies under a comment, at every depth (shown in "[+ N]"). */
+    private int countReplies(Comment comment) {
+        int count = 0;
+        for (int i = comments.indexOf(comment) + 1; i < comments.size(); i++) {
+            if (comments.get(i).getDepth() <= comment.getDepth()) {
+                break;
+            }
+            count++;
+        }
+        return count;
     }
 
     @NonNull
@@ -72,13 +128,15 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).bind(post);
         } else {
-            ((CommentViewHolder) holder).bind(comments.get(getCommentIndex(position)));
+            Comment comment = visibleComments.get(getCommentIndex(position));
+            boolean collapsed = collapsedIds.contains(comment.getId());
+            ((CommentViewHolder) holder).bind(comment, collapsed, countReplies(comment), v -> toggleCollapse(comment));
         }
     }
 
     @Override
     public int getItemCount() {
-        int size = comments.size();
+        int size = visibleComments.size();
         if(!hasHeader()){
             return size;
         }else{
@@ -213,14 +271,17 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
 
         private static final int MAX_INDENT_DEPTH = 6;
-        private static final int INDENT_DP = 16;
+        private static final int SLOT_DP = 14;
+        private static final int LINE_DP = 2;
+        private static final int CORNER_DP = 12;
 
         private final TextView author;
         private final TextView date;
         private final TextView score;
         private final TextView body;
         private final TextView collapse;
-        private final MaterialCardView card;
+        private final LinearLayout indent;
+        private final LinearLayout box;
 
         CommentViewHolder(View itemView) {
             super(itemView);
@@ -229,43 +290,77 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             score = itemView.findViewById(R.id.comment_score);
             body = itemView.findViewById(R.id.comment_body);
             collapse = itemView.findViewById(R.id.comment_collapse);
-            card = (MaterialCardView) itemView;
+            indent = itemView.findViewById(R.id.comment_indent);
+            box = itemView.findViewById(R.id.comment_box);
         }
 
-        void bind(Comment comment) {
+        void bind(Comment comment, boolean collapsed, int replyCount, View.OnClickListener onToggle) {
             Context context = itemView.getContext();
-            
+
             author.setText(context.getString(R.string.title_user, FormatUtils.shortName(comment.getAuthor())));
             date.setText(FormatUtils.formatTimeAgo(context, comment.getCreatedUtc()));
             score.setText(context.getString(R.string.comment_score, FormatUtils.formatCount(comment.getScore())));
-            body.setText(comment.getBody());
+            // Lemmy keeps the empty lines at the end of a comment, they made some boxes too tall
+            body.setText(comment.getBody().trim());
+
+            // A folded comment only keeps its first line, its replies are hidden by the adapter
+            if (collapsed) {
+                body.setVisibility(View.GONE);
+                if (replyCount == 0) {
+                    collapse.setText(R.string.comment_expand_no_replies);
+                } else {
+                    collapse.setText(context.getString(R.string.comment_expand, replyCount));
+                }
+            } else {
+                body.setVisibility(View.VISIBLE);
+                collapse.setText(R.string.comment_collapse);
+            }
+            collapse.setOnClickListener(onToggle);
 
             showDepth(context, comment.getDepth());
         }
 
         /**
-         * Shifts the card to the right according to the depth of the comment, and alternates
-         * its background color, so that the replies look nested in their parent.
+         * Draws one thread line per parent on the left, then gives the comment a rounded box.
+         * The lines take the whole height of the row, so they join from one row to the next.
          */
         private void showDepth(Context context, int depth) {
             // After MAX_INDENT_DEPTH levels the text would get too narrow: stop shifting
             int indentLevel = Math.min(depth, MAX_INDENT_DEPTH);
-            // setMarginStart() takes pixels, not dp
+            // The sizes of the views are in pixels, not dp
             float density = context.getResources().getDisplayMetrics().density;
-            int marginPx = Math.round(indentLevel * INDENT_DP * density);
+            int slotPx = Math.round(SLOT_DP * density);
+            int linePx = Math.round(LINE_DP * density);
+            int lineColor = MaterialColors.getColor(itemView, com.google.android.material.R.attr.colorOutlineVariant);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) card.getLayoutParams();
-            params.setMarginStart(marginPx);
-            card.setLayoutParams(params);
+            // The row may be reused from a comment of another depth: rebuild the lines
+            indent.removeAllViews();
+            for (int level = 0; level < indentLevel; level++) {
+                // A thin line in the middle of a slot, the slot gives the shift to the right
+                FrameLayout slot = new FrameLayout(context);
+                View line = new View(context);
+                line.setBackgroundColor(lineColor);
+                slot.addView(line, new FrameLayout.LayoutParams(linePx, ViewGroup.LayoutParams.MATCH_PARENT, Gravity.CENTER_HORIZONTAL));
+                indent.addView(slot, new LinearLayout.LayoutParams(slotPx, ViewGroup.LayoutParams.MATCH_PARENT));
+            }
 
-            // The row may be reused from a comment of another depth: always set the color
+            // Rounded box with a thin border, like a MaterialCardView
+            GradientDrawable background = new GradientDrawable();
+            background.setCornerRadius(CORNER_DP * density);
+            background.setColor(getDepthColor(context, depth));
+            background.setStroke(Math.max(1, Math.round(density)), lineColor);
+            box.setBackground(background);
+        }
+
+        /** White for the even depths, light green for the odd ones. */
+        private int getDepthColor(Context context, int depth) {
             int colorRes;
             if (depth % 2 == 0) {
                 colorRes = R.color.comment_background_even;
             } else {
                 colorRes = R.color.comment_background_odd;
             }
-            card.setCardBackgroundColor(ContextCompat.getColor(context, colorRes));
+            return ContextCompat.getColor(context, colorRes);
         }
     }
 }

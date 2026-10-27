@@ -46,9 +46,14 @@
 
     <!-- Discussion -->
     <string name="comment_score">▲ %1$s ▼</string>
+    <string name="empty_comments">No comments yet</string>
     <!-- %1$s is a date already formatted by FormatUtils.formatTimeAgo(), e.g. "3h ago" -->
     <string name="discussion_date">· %1$s</string>
     <string name="discussion_link">🔗 %1$s</string>
+    <string name="comment_collapse">[–]</string>
+    <!-- %1$d is the number of hidden replies -->
+    <string name="comment_expand">[+ %1$d]</string>
+    <string name="comment_expand_no_replies">[+]</string>
 
     <!-- Errors -->
     <string name="retry">Retry</string>

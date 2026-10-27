@@ -1,15 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- One comment of a discussion, filled by ui/discussion/CommentAdapter.
-     The adapter sets the left margin and the background color according to the depth of the comment. -->
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+     The stripes on the left take the whole height of the row, so the thread lines of
+     consecutive rows join and show which comment each reply answers. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Material3.CardView.Outlined"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginVertical="4dp"
-    app:strokeColor="?attr/colorOutlineVariant"
-    app:strokeWidth="1dp">
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp">
+
+    <!-- One stripe per parent, added by the adapter -->
+    <LinearLayout
+        android:id="@+id/comment_indent"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal" />
+
+    <!-- The rounded box of this comment, its color depends on the depth (set by the adapter).
+         The vertical margin is the space between two comments. -->
+    <LinearLayout
+        android:id="@+id/comment_box"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="4dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,7 +46,7 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackground"
                 android:paddingEnd="8dp"
-                android:text="[–]"
+                android:text="@string/comment_collapse"
                 android:textAppearance="?attr/textAppearanceLabelLarge"
                 android:textColor="?attr/colorOnSurfaceVariant" />
 
@@ -79,4 +94,6 @@
 
     </LinearLayout>
 
-</com.google.android.material.card.MaterialCardView>
+    </LinearLayout>
+
+</LinearLayout>
