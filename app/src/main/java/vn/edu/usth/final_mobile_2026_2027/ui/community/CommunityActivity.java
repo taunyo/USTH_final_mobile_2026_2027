@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -43,6 +44,7 @@ public class CommunityActivity extends AppCompatActivity {
     private String sort = "Hot";
     private PostAdapter adapter;
     private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefresh;
     private ErrorView errorView;
 
     /**
@@ -78,6 +80,10 @@ public class CommunityActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        // Pull to refresh: the circle of the SwipeRefreshLayout replaces the progress bar
+        swipeRefresh = findViewById(R.id.swipe_refresh);
+        swipeRefresh.setOnRefreshListener(() -> loadCommunity(true));
+
         // After a rotation, keep the sort order chosen by the user.
         // Android puts back the selected chip by itself
         if (savedInstanceState != null) {
@@ -91,11 +97,11 @@ public class CommunityActivity extends AppCompatActivity {
             // The listener is also called when Android puts back the chip after a rotation
             if (!newSort.equals(sort)) {
                 sort = newSort;
-                loadPosts();
+                loadPosts(false);
             }
         });
 
-        loadCommunity();
+        loadCommunity(false);
     }
 
     @Override
@@ -118,9 +124,13 @@ public class CommunityActivity extends AppCompatActivity {
     /**
      * Loads the header first, then the posts.
      * So for a community that doesn't exist (HTTP 404), only its error is shown.
+     *
+     * @param refreshing true for a pull to refresh: its circle is already shown
      */
-    private void loadCommunity() {
-        progressBar.setVisibility(View.VISIBLE);
+    private void loadCommunity(boolean refreshing) {
+        if (!refreshing) {
+            progressBar.setVisibility(View.VISIBLE);
+        }
         errorView.hide();
 
         LemmyApi.getInstance(this).getCommunity(communityName, new ApiCallback<Community>() {
@@ -133,7 +143,7 @@ public class CommunityActivity extends AppCompatActivity {
                     return;
                 }
                 showHeader(community);
-                loadPosts();
+                loadPosts(refreshing);
             }
 
             @Override
@@ -142,16 +152,23 @@ public class CommunityActivity extends AppCompatActivity {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
+                // After a pull to refresh the old posts are still there: remove them,
+                // otherwise the error message is drawn on top of them
+                adapter.setPosts(new ArrayList<>());
                 // "Retry" loads the whole page again
-                errorView.showError(message, CommunityActivity.this::loadCommunity);
+                errorView.showError(message, () -> loadCommunity(false));
             }
         });
     }
 
-    private void loadPosts() {
-        // Remove the posts of the previous sort order
-        adapter.setPosts(new ArrayList<>());
-        progressBar.setVisibility(View.VISIBLE);
+    /** @param refreshing true for a pull to refresh: the old posts stay until the new ones arrive */
+    private void loadPosts(boolean refreshing) {
+        if (!refreshing) {
+            // Remove the posts of the previous sort order
+            adapter.setPosts(new ArrayList<>());
+            progressBar.setVisibility(View.VISIBLE);
+        }
         errorView.hide();
 
         LemmyApi.getInstance(this).getCommunityPosts(communityName, sort, new ApiCallback<List<Post>>() {
@@ -161,6 +178,7 @@ public class CommunityActivity extends AppCompatActivity {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
                 adapter.setPosts(posts);
                 if (posts.isEmpty()) {
                     errorView.showEmpty(getString(R.string.empty_posts));
@@ -173,8 +191,10 @@ public class CommunityActivity extends AppCompatActivity {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
+                swipeRefresh.setRefreshing(false);
+                adapter.setPosts(new ArrayList<>());
                 // The header is already shown: "Retry" only loads the posts again
-                errorView.showError(message, CommunityActivity.this::loadPosts);
+                errorView.showError(message, () -> loadPosts(false));
             }
         });
     }
