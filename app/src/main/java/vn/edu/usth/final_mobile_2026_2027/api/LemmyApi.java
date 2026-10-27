@@ -126,7 +126,16 @@ public class LemmyApi {
 
     /** Posts of a community: GET /post/list?community_name={name}&sort=Hot (also New, TopDay...) */
     public void getCommunityPosts(String name, ApiCallback<List<Post>> callback) {
-        // TODO (Community page)
+        String url = BASE_URL + "/post/list?community_name=" + name + "&sort=Hot";
+
+        // Same answer as the home feed: { "posts": [ post views... ] }
+        get(url, response -> {
+            try {
+                callback.onSuccess(LemmyParser.parsePosts(response));
+            } catch (JSONException e) {
+                callback.onError(context.getString(R.string.error_parsing));
+            }
+        }, callback);
     }
 
     // ---------------------------------------------------------------------------------------------
