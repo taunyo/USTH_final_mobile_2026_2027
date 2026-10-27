@@ -46,6 +46,9 @@
 
     <!-- Discussion -->
     <string name="comment_score">▲ %1$s ▼</string>
+    <!-- %1$s is a date already formatted by FormatUtils.formatTimeAgo(), e.g. "3h ago" -->
+    <string name="discussion_date">· %1$s</string>
+    <string name="discussion_link">🔗 %1$s</string>
 
     <!-- Errors -->
     <string name="retry">Retry</string>

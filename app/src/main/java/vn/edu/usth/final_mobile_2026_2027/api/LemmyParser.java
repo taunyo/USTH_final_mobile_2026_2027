@@ -8,8 +8,11 @@ import java.net.URI;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import vn.edu.usth.final_mobile_2026_2027.model.Comment;
 import vn.edu.usth.final_mobile_2026_2027.model.Community;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
 
@@ -63,8 +66,87 @@ public class LemmyParser {
         return parseCommunity(new JSONObject(json).getJSONObject("community_view"));
     }
 
-    // TODO (Discussion page): parsePost(String json) for /post, the view is in "post_view"
-    // TODO (Discussion page): parseComments(String json), rebuild the tree with the "path" of each comment
+    /** Parses a post alone, from /post: { "post_view": { post view }, ... } */
+    public static Post parsePost(String json) throws JSONException {
+        return parsePost(new JSONObject(json).getJSONObject("post_view"));
+    }
+
+    /** A comment view: { "comment": { ... }, "creator": { ... }, "counts": { "score": ... } } */
+    private static Comment parseComment(JSONObject view) throws JSONException {
+        JSONObject data = view.getJSONObject("comment");
+        JSONObject counts = view.getJSONObject("counts");
+
+        Comment comment = new Comment();
+        comment.setId(data.getInt("id"));
+        comment.setAuthor(getFullName(view.getJSONObject("creator")));
+        comment.setBody(getString(data, "content"));
+        comment.setScore(counts.optInt("score"));
+        comment.setCreatedUtc(getDate(data, "published"));
+
+        // "0.12" is a direct answer to the post (depth 0), "0.12.45" a reply to it (depth 1)
+        String[] path = getString(data, "path").split("\\.");
+        comment.setDepth(path.length - 2);
+        return comment;
+    }
+
+    /**
+     * Parses the comments of a post: { "comments": [ comment views... ] }
+     * Lemmy gives them in no particular order.
+     */
+    public static List<Comment> parseComments(String json) throws JSONException {
+        JSONArray views = new JSONObject(json).getJSONArray("comments");
+
+        List<Comment> comments = new ArrayList<>();
+        Map<Integer, Integer> parentIds = new HashMap<>();
+        for (int i = 0; i < views.length(); i++) {
+            JSONObject view = views.getJSONObject(i);
+            Comment comment = parseComment(view);
+            comments.add(comment);
+            parentIds.put(comment.getId(), getParentId(view));
+        }
+
+        Map<Integer, List<Comment>> replies = new HashMap<>();
+        for (Comment comment : comments) {
+            int parentId = parentIds.get(comment.getId());
+            if (parentId != 0 && !parentIds.containsKey(parentId)) {
+                parentId = 0;
+            }
+            if (!replies.containsKey(parentId)) {
+                replies.put(parentId, new ArrayList<>());
+            }
+            replies.get(parentId).add(comment);
+        }
+
+        List<Comment> ordered = new ArrayList<>();
+        addInTreeOrder(0, replies, ordered);
+        return ordered;
+    }
+
+    /**
+     * Adds the replies to parentId to the list, each one directly followed by its own replies.
+     * The method calls itself for each reply, so it goes down the tree as deep as needed.
+     */
+    private static void addInTreeOrder(int parentId, Map<Integer, List<Comment>> replies, List<Comment> ordered) {
+        List<Comment> children = replies.get(parentId);
+        if (children == null) {
+            return; // no replies
+        }
+        for (Comment child : children) {
+            ordered.add(child);
+            addInTreeOrder(child.getId(), replies, ordered);
+        }
+    }
+
+    /** The parent of a comment is the next to last id of its path: "0.12.45" gives 12, "0.12" gives 0. */
+    private static int getParentId(JSONObject view) throws JSONException {
+        String[] path = getString(view.getJSONObject("comment"), "path").split("\\.");
+        if (path.length < 2) {
+            return 0;
+        }
+        return Integer.parseInt(path[path.length - 2]);
+    }
+
+
     // TODO (Profile page): parseUser(String json) for /user, the view is in "person_view"
 
     private static Post parsePost(JSONObject view) throws JSONException {

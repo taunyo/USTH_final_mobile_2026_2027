@@ -2,6 +2,9 @@ package vn.edu.usth.final_mobile_2026_2027.ui.discussion;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +27,7 @@ import vn.edu.usth.final_mobile_2026_2027.model.Comment;
 import vn.edu.usth.final_mobile_2026_2027.model.Community;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
 import vn.edu.usth.final_mobile_2026_2027.ui.community.CommunityActivity;
+import vn.edu.usth.final_mobile_2026_2027.ui.profile.UserProfileActivity;
 import vn.edu.usth.final_mobile_2026_2027.utils.FormatUtils;
 
 
@@ -108,15 +112,97 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      */
     public static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        // TODO: one field per view of item_discussion_header.xml
+        private final TextView community;
+        private final TextView instance;
+        private final TextView author;
+        private final TextView date;
+        private final TextView title;
+        private final MaterialCardView imageCard;
+        private final ImageView image;
+        private final TextView body;
+        private final MaterialCardView linkCard;
+        private final TextView link;
+        private final TextView score;
+        private final TextView comments;
 
         HeaderViewHolder(View itemView) {
             super(itemView);
-            // TODO: findViewById for each field
+            community = itemView.findViewById(R.id.header_community);
+            instance = itemView.findViewById(R.id.header_instance);
+            author = itemView.findViewById(R.id.header_author);
+            date = itemView.findViewById(R.id.header_date);
+            title = itemView.findViewById(R.id.header_title);
+            imageCard = itemView.findViewById(R.id.header_image_card);
+            image = itemView.findViewById(R.id.header_image);
+            body = itemView.findViewById(R.id.header_body);
+            linkCard = itemView.findViewById(R.id.header_link_card);
+            link = itemView.findViewById(R.id.header_link);
+            score = itemView.findViewById(R.id.header_score);
+            comments = itemView.findViewById(R.id.header_comments);
         }
 
         void bind(Post post) {
-            // TODO: fill the views with the getters of post
+            Context context = itemView.getContext();
+
+            // Only the short names are displayed, the pages receive the full names (see the clicks)
+            community.setText(context.getString(R.string.title_community, FormatUtils.shortName(post.getCommunity())));
+            showInstance(post.getCommunity());
+            author.setText(context.getString(R.string.title_user, FormatUtils.shortName(post.getAuthor())));
+            date.setText(context.getString(R.string.discussion_date,FormatUtils.formatTimeAgo(context, post.getCreatedUtc())));
+            title.setText(post.getTitle());
+
+            score.setText(context.getString(R.string.comment_score, FormatUtils.formatCount(post.getScore())));
+            comments.setText(context.getResources().getQuantityString(R.plurals.post_comments, post.getNumComments(), FormatUtils.formatCount(post.getNumComments())));
+
+            // Text posts have a body, link and image posts often don't
+            if (TextUtils.isEmpty(post.getBody())) {
+                body.setVisibility(View.GONE);
+            } else {
+                body.setText(post.getBody());
+                body.setVisibility(View.VISIBLE);
+            }
+
+            showImage(post.getImageUrl());
+            showLink(post);
+
+            community.setOnClickListener(v -> v.getContext().startActivity(CommunityActivity.newIntent(v.getContext(), post.getCommunity())));
+            author.setOnClickListener(v -> v.getContext().startActivity(UserProfileActivity.newIntent(v.getContext(), post.getAuthor())));
+        }
+
+        /** Shows "@lemmy.ml" next to a community of another instance, nothing for lemmy.world. */
+        private void showInstance(String fullName) {
+            int at = fullName.indexOf('@');
+            if (at == -1) {
+                instance.setVisibility(View.GONE);
+            } else {
+                instance.setText(fullName.substring(at));
+                instance.setVisibility(View.VISIBLE);
+            }
+        }
+
+        private void showImage(String url) {
+            if (url == null) {
+                Glide.with(image).clear(image);
+                imageCard.setVisibility(View.GONE);
+            } else {
+                imageCard.setVisibility(View.VISIBLE);
+                Glide.with(image).load(url).into(image);
+            }
+        }
+
+        /** The link of a link post. An image post already shows its url as the image. */
+        private void showLink(Post post) {
+            String url = post.getUrl();
+            if (TextUtils.isEmpty(url) || post.getImageUrl() != null) {
+                linkCard.setVisibility(View.GONE);
+                linkCard.setOnClickListener(null);
+            } else {
+                link.setText(itemView.getContext().getString(R.string.discussion_link, url));
+                linkCard.setVisibility(View.VISIBLE);
+                // Opens the page in the browser of the phone
+                linkCard.setOnClickListener(v ->
+                        v.getContext().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url))));
+            }
         }
     }
 

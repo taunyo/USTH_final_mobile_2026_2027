@@ -147,7 +147,15 @@ public class LemmyApi {
 
     /** A post alone: GET /post?id={postId} */
     public void getPost(int postId, ApiCallback<Post> callback) {
-        // TODO (Discussion page)
+        String url = BASE_URL + "/post?id=" + postId;
+
+        get(url, response -> {
+            try {
+                callback.onSuccess(LemmyParser.parsePost(response));
+            } catch (JSONException e) {
+                callback.onError(context.getString(R.string.error_parsing));
+            }
+        }, callback);
     }
 
     /**
@@ -156,7 +164,15 @@ public class LemmyApi {
      * tells where it is in the tree (see the README).
      */
     public void getComments(int postId, ApiCallback<List<Comment>> callback) {
-        // TODO (Discussion page)
+        String url = BASE_URL + "/comment/list?post_id=" + postId + "&max_depth=8&limit=50";
+
+        get(url, response -> {
+            try {
+                callback.onSuccess(LemmyParser.parseComments(response));
+            } catch (JSONException e) {
+                callback.onError(context.getString(R.string.error_parsing));
+            }
+        }, callback);
     }
 
     // ---------------------------------------------------------------------------------------------
