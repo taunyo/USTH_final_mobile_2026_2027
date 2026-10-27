@@ -124,9 +124,12 @@ public class LemmyApi {
         }, callback);
     }
 
-    /** Posts of a community: GET /post/list?community_name={name}&sort=Hot (also New, TopDay...) */
-    public void getCommunityPosts(String name, ApiCallback<List<Post>> callback) {
-        String url = BASE_URL + "/post/list?community_name=" + name + "&sort=Hot";
+    /**
+     * Posts of a community: GET /post/list?community_name={name}&sort={sort}
+     * sort is "Hot", "New", "TopDay"...
+     */
+    public void getCommunityPosts(String name, String sort, ApiCallback<List<Post>> callback) {
+        String url = BASE_URL + "/post/list?community_name=" + name + "&sort=" + sort;
 
         // Same answer as the home feed: { "posts": [ post views... ] }
         get(url, response -> {

@@ -21,6 +21,11 @@
         <item quantity="other">%1$s members</item>
     </plurals>
 
+    <!-- Community -->
+    <string name="sort_hot">Hot</string>
+    <string name="sort_new">New</string>
+    <string name="sort_top_day">Top of the day</string>
+
     <!-- Post list -->
     <string name="empty_posts">No posts yet</string>
     <string name="time_now">just now</string>

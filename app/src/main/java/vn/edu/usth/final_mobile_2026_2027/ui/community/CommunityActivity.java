@@ -9,13 +9,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.chip.ChipGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import vn.edu.usth.final_mobile_2026_2027.R;
@@ -34,8 +37,10 @@ import vn.edu.usth.final_mobile_2026_2027.utils.ViewUtils;
 public class CommunityActivity extends AppCompatActivity {
 
     private static final String EXTRA_COMMUNITY_NAME = "community_name";
+    private static final String STATE_SORT = "sort";
 
     private String communityName;
+    private String sort = "Hot";
     private PostAdapter adapter;
     private ProgressBar progressBar;
     private ErrorView errorView;
@@ -73,9 +78,41 @@ public class CommunityActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        loadCommunity();
+        // After a rotation, keep the sort order chosen by the user.
+        // Android puts back the selected chip by itself
+        if (savedInstanceState != null) {
+            sort = savedInstanceState.getString(STATE_SORT, sort);
+        }
 
-        // TODO (bonus): let the user choose the sort order (Hot, New, TopDay)
+        ChipGroup sortChips = findViewById(R.id.sort_chips);
+        sortChips.setOnCheckedStateChangeListener((group, checkedIds) -> {
+            // selectionRequired="true": there is always one selected chip
+            String newSort = getSort(checkedIds.get(0));
+            // The listener is also called when Android puts back the chip after a rotation
+            if (!newSort.equals(sort)) {
+                sort = newSort;
+                loadPosts();
+            }
+        });
+
+        loadCommunity();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_SORT, sort);
+    }
+
+    /** Returns the value of the "sort" parameter of the API for a chip. */
+    private static String getSort(int chipId) {
+        if (chipId == R.id.chip_new) {
+            return "New";
+        }
+        if (chipId == R.id.chip_top_day) {
+            return "TopDay";
+        }
+        return "Hot";
     }
 
     /**
@@ -110,10 +147,12 @@ public class CommunityActivity extends AppCompatActivity {
     }
 
     private void loadPosts() {
+        // Remove the posts of the previous sort order
+        adapter.setPosts(new ArrayList<>());
         progressBar.setVisibility(View.VISIBLE);
         errorView.hide();
 
-        LemmyApi.getInstance(this).getCommunityPosts(communityName, new ApiCallback<List<Post>>() {
+        LemmyApi.getInstance(this).getCommunityPosts(communityName, sort, new ApiCallback<List<Post>>() {
             @Override
             public void onSuccess(List<Post> posts) {
                 if (isFinishing()) {

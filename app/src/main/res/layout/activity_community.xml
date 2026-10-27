@@ -77,6 +77,38 @@
             android:maxLines="3"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             tools:text="This is a most excellent place for technology news and articles." />
+
+        <!-- Sort order of the posts: one chip is always selected -->
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/sort_chips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:checkedChip="@id/chip_hot"
+            app:selectionRequired="true"
+            app:singleSelection="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_hot"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_hot" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_new"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_new" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chip_top_day"
+                style="@style/Widget.Material3.Chip.Filter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/sort_top_day" />
+        </com.google.android.material.chip.ChipGroup>
     </LinearLayout>
 
     <FrameLayout
