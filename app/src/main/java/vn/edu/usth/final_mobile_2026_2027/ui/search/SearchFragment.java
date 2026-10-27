@@ -30,6 +30,11 @@ import vn.edu.usth.final_mobile_2026_2027.ui.common.ErrorView;
  */
 public class SearchFragment extends Fragment {
 
+    private static final String STATE_QUERY = "query";
+
+    // Text of the last search, null before the first one
+    private String lastQuery;
+
     private EditText searchInput;
     private CommunityAdapter adapter;
     private ProgressBar progressBar;
@@ -63,12 +68,28 @@ public class SearchFragment extends Fragment {
             }
             return false;
         });
+
+        // After a rotation the page is created again with an empty list:
+        // send the last search again (Volley answers from its cache if it is recent)
+        if (savedInstanceState != null) {
+            String query = savedInstanceState.getString(STATE_QUERY);
+            if (query != null) {
+                search(query);
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(STATE_QUERY, lastQuery);
     }
 
     private void search(String query) {
         if (query.isEmpty()) {
             return;
         }
+        lastQuery = query;
         hideKeyboard();
 
         // Remove the results of the previous search
