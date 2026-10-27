@@ -15,6 +15,7 @@ import java.util.Map;
 import vn.edu.usth.final_mobile_2026_2027.model.Comment;
 import vn.edu.usth.final_mobile_2026_2027.model.Community;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
+import vn.edu.usth.final_mobile_2026_2027.model.User;
 
 /**
  * Converts the JSON returned by Lemmy into model objects.
@@ -147,7 +148,22 @@ public class LemmyParser {
     }
 
 
-    // TODO (Profile page): parseUser(String json) for /user, the view is in "person_view"
+    /** Parses public information about a user from /user: { "person_view": { person view }, ... } */
+    public static User parseUser(String json) throws JSONException {
+        JSONObject personView = new JSONObject(json).getJSONObject("person_view");
+        JSONObject data = personView.getJSONObject("person");
+        JSONObject counts = personView.getJSONObject("counts");
+
+        User user = new User();
+        user.setName(getFullName(data));
+        user.setDisplayName(getString(data, "display_name"));
+        user.setBanned(data.optBoolean("banned"));
+        user.setPostCount(counts.optInt("post_count"));
+        user.setCommentCount(counts.optInt("comment_count"));
+        user.setCreatedUtc(getDate(data, "published"));
+        user.setIconUrl(getImageUrl(data, "avatar"));
+        return user;
+    }
 
     private static Post parsePost(JSONObject view) throws JSONException {
         JSONObject data = view.getJSONObject("post");
