@@ -32,6 +32,8 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_COMMENT = 1;
 
+
+
     @SuppressLint("NotifyDataSetChanged")
     public void setPost(Post post) {
         this.post = post;
@@ -93,11 +95,11 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
      * so bind() must set every view, even the ones that stay empty.
      */
     public static class CommentViewHolder extends RecyclerView.ViewHolder {
-        // 1. tes champs : auteur, date, score, texte...
+        private final TextView author;
 
         CommentViewHolder(View itemView) {
             super(itemView);
-            // 2. findViewById pour chaque champ
+            author = itemView.findViewById(R.id.comment_author);
         }
 
         void bind(Comment comment) {
