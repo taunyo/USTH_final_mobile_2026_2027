@@ -15,7 +15,69 @@
         app:navigationIcon="@drawable/ic_arrow_back"
         tools:title="c/technology" />
 
-    <!-- TODO: header with the icon, the title, the number of members and the description -->
+    <!-- Hidden until the information about the community is loaded -->
+    <LinearLayout
+        android:id="@+id/community_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="16dp"
+        android:paddingBottom="12dp"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <!-- Icon, with the title and the members on its right -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- The activity puts the default icon when the community has none -->
+            <ImageView
+                android:id="@+id/community_icon"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                tools:src="@drawable/ic_community" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/community_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:maxLines="2"
+                    android:textAppearance="?attr/textAppearanceTitleLarge"
+                    tools:text="Technology" />
+
+                <TextView
+                    android:id="@+id/community_members"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    tools:text="89k members" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Hidden when the community has no description. Cut after 3 lines, so the posts keep the space -->
+        <TextView
+            android:id="@+id/community_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:ellipsize="end"
+            android:maxLines="3"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            tools:text="This is a most excellent place for technology news and articles." />
+    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -32,6 +94,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <!-- Error message + "Retry", or "No posts yet" (see ui/common/ErrorView) -->
+        <include
+            android:id="@+id/error_view"
+            layout="@layout/view_error"
             android:visibility="gone" />
     </FrameLayout>
 
