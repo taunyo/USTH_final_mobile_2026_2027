@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.imageview.ShapeableImageView;
 
 import java.util.List;
 
@@ -40,7 +40,7 @@ public class UserProfileActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private ErrorView errorView;
 
-    private ImageView avatarImage;
+    private ShapeableImageView avatarImage;
     private TextView usernameText;
     private TextView memberSinceText;
     private TextView postsCountText;
@@ -136,7 +136,7 @@ public class UserProfileActivity extends AppCompatActivity {
             Glide.with(avatarImage).clear(avatarImage);
             avatarImage.setImageResource(R.drawable.ic_community);
         } else {
-            Glide.with(avatarImage).load(iconUrl).centerCrop().into(avatarImage);
+            Glide.with(avatarImage).load(iconUrl).circleCrop().into(avatarImage);
         }
     }
 
