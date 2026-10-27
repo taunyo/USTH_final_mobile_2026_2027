@@ -171,7 +171,7 @@ public class CommunityActivity extends AppCompatActivity {
         }
         errorView.hide();
 
-        LemmyApi.getInstance(this).getCommunityPosts(communityName, sort, new ApiCallback<List<Post>>() {
+        LemmyApi.getInstance(this).getCommunityPosts(communityName, sort, 1, new ApiCallback<List<Post>>() {
             @Override
             public void onSuccess(List<Post> posts) {
                 if (isFinishing() || isDestroyed()) {
