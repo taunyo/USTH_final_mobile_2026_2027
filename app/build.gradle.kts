@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.recyclerview)
     implementation(libs.volley)
     implementation(libs.glide)
+    implementation(libs.swiperefreshlayout)
     testImplementation(libs.junit)
     // The org.json of Android only works on a phone: local unit tests need the real library
     testImplementation(libs.json)

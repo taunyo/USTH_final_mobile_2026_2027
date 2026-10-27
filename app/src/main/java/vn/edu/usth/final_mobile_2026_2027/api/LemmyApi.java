@@ -30,7 +30,7 @@ import vn.edu.usth.final_mobile_2026_2027.model.User;
  *
  * Usage from an Activity or a Fragment:
  * <pre>
- * LemmyApi.getInstance(this).getPopularPosts(new ApiCallback&lt;List&lt;Post&gt;&gt;() { ... });
+ * LemmyApi.getInstance(this).getPopularPosts(1, new ApiCallback&lt;List&lt;Post&gt;&gt;() { ... });
  * </pre>
  *
  * Lemmy is made of many servers ("instances") that share their communities. The app reads
@@ -67,11 +67,12 @@ public class LemmyApi {
     // ---------------------------------------------------------------------------------------------
 
     /**
-     * Posts of the home feed, from all the communities: GET /post/list?type_=All&sort=Hot
+     * Posts of the home feed, from all the communities: GET /post/list?type_=All&sort=Hot&page={page}
+     * page starts at 1, with 20 posts per page.
      * This method is the example to follow for the other ones.
      */
-    public void getPopularPosts(ApiCallback<List<Post>> callback) {
-        String url = BASE_URL + "/post/list?type_=All&sort=Hot&limit=20";
+    public void getPopularPosts(int page, ApiCallback<List<Post>> callback) {
+        String url = BASE_URL + "/post/list?type_=All&sort=Hot&limit=20&page=" + page;
 
         get(url, response -> {
             try {
@@ -125,11 +126,11 @@ public class LemmyApi {
     }
 
     /**
-     * Posts of a community: GET /post/list?community_name={name}&sort={sort}
-     * sort is "Hot", "New", "TopDay"...
+     * Posts of a community: GET /post/list?community_name={name}&sort={sort}&page={page}
+     * sort is "Hot", "New", "TopDay"... page starts at 1.
      */
-    public void getCommunityPosts(String name, String sort, ApiCallback<List<Post>> callback) {
-        String url = BASE_URL + "/post/list?community_name=" + name + "&sort=" + sort;
+    public void getCommunityPosts(String name, String sort, int page, ApiCallback<List<Post>> callback) {
+        String url = BASE_URL + "/post/list?community_name=" + name + "&sort=" + sort + "&page=" + page;
 
         // Same answer as the home feed: { "posts": [ post views... ] }
         get(url, response -> {
