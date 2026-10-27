@@ -126,8 +126,10 @@ public class CommunityActivity extends AppCompatActivity {
         LemmyApi.getInstance(this).getCommunity(communityName, new ApiCallback<Community>() {
             @Override
             public void onSuccess(Community community) {
-                // The user may have left the page while the request was running
-                if (isFinishing()) {
+                // The user may have left the page while the request was running (isFinishing),
+                // or rotated the screen: this page is then destroyed and a new one loads again
+                // (isDestroyed, isFinishing stays false)
+                if (isFinishing() || isDestroyed()) {
                     return;
                 }
                 showHeader(community);
@@ -136,7 +138,7 @@ public class CommunityActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                if (isFinishing()) {
+                if (isFinishing() || isDestroyed()) {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
@@ -155,7 +157,7 @@ public class CommunityActivity extends AppCompatActivity {
         LemmyApi.getInstance(this).getCommunityPosts(communityName, sort, new ApiCallback<List<Post>>() {
             @Override
             public void onSuccess(List<Post> posts) {
-                if (isFinishing()) {
+                if (isFinishing() || isDestroyed()) {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
@@ -167,7 +169,7 @@ public class CommunityActivity extends AppCompatActivity {
 
             @Override
             public void onError(String message) {
-                if (isFinishing()) {
+                if (isFinishing() || isDestroyed()) {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
