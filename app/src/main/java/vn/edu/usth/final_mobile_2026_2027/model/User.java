@@ -7,6 +7,8 @@ package vn.edu.usth.final_mobile_2026_2027.model;
 public class User {
 
     private String name;         // "name", or "name@instance" for a user of another instance
+    private String displayName;
+    private boolean banned;
     private int postCount;
     private int commentCount;
     private long createdUtc;     // account creation date in seconds since 01/01/1970
@@ -18,6 +20,22 @@ public class User {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public void setDisplayName(String displayName) {
+        this.displayName = displayName;
+    }
+
+    public boolean isBanned() {
+        return banned;
+    }
+
+    public void setBanned(boolean banned) {
+        this.banned = banned;
     }
 
     public int getPostCount() {
