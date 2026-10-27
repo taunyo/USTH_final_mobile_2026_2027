@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -27,6 +28,7 @@ import vn.edu.usth.final_mobile_2026_2027.api.ApiCallback;
 import vn.edu.usth.final_mobile_2026_2027.api.LemmyApi;
 import vn.edu.usth.final_mobile_2026_2027.model.Community;
 import vn.edu.usth.final_mobile_2026_2027.model.Post;
+import vn.edu.usth.final_mobile_2026_2027.ui.common.EndlessScrollListener;
 import vn.edu.usth.final_mobile_2026_2027.ui.common.ErrorView;
 import vn.edu.usth.final_mobile_2026_2027.ui.common.PostAdapter;
 import vn.edu.usth.final_mobile_2026_2027.utils.FormatUtils;
@@ -46,6 +48,7 @@ public class CommunityActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private SwipeRefreshLayout swipeRefresh;
     private ErrorView errorView;
+    private EndlessScrollListener scrollListener;
 
     /**
      * Creates the Intent to open this page, e.g.
@@ -83,6 +86,15 @@ public class CommunityActivity extends AppCompatActivity {
         // Pull to refresh: the circle of the SwipeRefreshLayout replaces the progress bar
         swipeRefresh = findViewById(R.id.swipe_refresh);
         swipeRefresh.setOnRefreshListener(() -> loadCommunity(true));
+
+        // Infinite scroll: the next page is loaded when the user gets near the end of the list
+        scrollListener = new EndlessScrollListener() {
+            @Override
+            protected void onLoadMore(int page) {
+                loadMorePosts(page);
+            }
+        };
+        recyclerView.addOnScrollListener(scrollListener);
 
         // After a rotation, keep the sort order chosen by the user.
         // Android puts back the selected chip by itself
@@ -180,6 +192,8 @@ public class CommunityActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 swipeRefresh.setRefreshing(false);
                 adapter.setPosts(posts);
+                // The list starts again from page 1: the next page to load is page 2
+                scrollListener.reset();
                 if (posts.isEmpty()) {
                     errorView.showEmpty(getString(R.string.empty_posts));
                 }
@@ -195,6 +209,36 @@ public class CommunityActivity extends AppCompatActivity {
                 adapter.setPosts(new ArrayList<>());
                 // The header is already shown: "Retry" only loads the posts again
                 errorView.showError(message, () -> loadPosts(false));
+            }
+        });
+    }
+
+    /** Loads page 2, 3... and adds its posts at the end of the list. */
+    private void loadMorePosts(int page) {
+        // Remember the sort order of this request: the user can change it while it is running
+        String requestSort = sort;
+
+        LemmyApi.getInstance(this).getCommunityPosts(communityName, requestSort, page, new ApiCallback<List<Post>>() {
+            @Override
+            public void onSuccess(List<Post> posts) {
+                // The sort order changed: these posts are not in the new order, forget them.
+                // loadPosts() calls reset() when the first page of the new order arrives
+                if (isFinishing() || isDestroyed() || !requestSort.equals(sort)) {
+                    return;
+                }
+                adapter.addPosts(posts);
+                scrollListener.onPageLoaded(posts.isEmpty());
+            }
+
+            @Override
+            public void onError(String message) {
+                if (isFinishing() || isDestroyed() || !requestSort.equals(sort)) {
+                    return;
+                }
+                // The posts already shown stay: a short message is enough,
+                // the same page is asked again when the user scrolls
+                Toast.makeText(CommunityActivity.this, message, Toast.LENGTH_SHORT).show();
+                scrollListener.onPageFailed();
             }
         });
     }
