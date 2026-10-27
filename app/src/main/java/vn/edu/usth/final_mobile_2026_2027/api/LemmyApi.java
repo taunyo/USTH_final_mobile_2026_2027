@@ -182,12 +182,28 @@ public class LemmyApi {
 
     /** Public information about a user: GET /user?username={username}, in "person_view" */
     public void getUser(String username, ApiCallback<User> callback) {
-        // TODO (Profile page)
+        String url = BASE_URL + "/user?username=" + Uri.encode(username);
+
+        get(url, response -> {
+            try {
+                callback.onSuccess(LemmyParser.parseUser(response));
+            } catch (JSONException e) {
+                callback.onError(context.getString(R.string.error_parsing));
+            }
+        }, callback);
     }
 
     /** Posts written by a user: GET /user?username={username}&sort=New, in "posts" */
     public void getUserPosts(String username, ApiCallback<List<Post>> callback) {
-        // TODO (Profile page)
+        String url = BASE_URL + "/user?username=" + Uri.encode(username) + "&sort=New";
+
+        get(url, response -> {
+            try {
+                callback.onSuccess(LemmyParser.parsePosts(response));
+            } catch (JSONException e) {
+                callback.onError(context.getString(R.string.error_parsing));
+            }
+        }, callback);
     }
 
     // ---------------------------------------------------------------------------------------------
