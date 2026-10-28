@@ -36,6 +36,10 @@ import vn.edu.usth.final_mobile_2026_2027.ui.profile.UserProfileActivity;
 import vn.edu.usth.final_mobile_2026_2027.utils.FormatUtils;
 
 
+/**
+ * Adapter of the Discussion page: the post at position 0, then the comments.
+ * The replies of a folded comment are not shown.
+ */
 public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Post post;
@@ -53,12 +57,17 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
 
 
+    /** Called by DiscussionActivity when the post is loaded: shows it at the top of the list. */
     @SuppressLint("NotifyDataSetChanged")
     public void setPost(Post post) {
         this.post = post;
         notifyDataSetChanged();
     }
 
+    /**
+     * Called by DiscussionActivity when the comments are loaded.
+     * The list must already be in the order of the tree (see LemmyParser.parseComments()).
+     */
     @SuppressLint("NotifyDataSetChanged")
     public void setComments(List<Comment> newComments){
         comments.clear();
@@ -113,6 +122,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return count;
     }
 
+    /** Creates an empty row: inflates the XML of the type given by getItemViewType(). */
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -130,6 +140,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /** Fills the row at this position with the post or with a comment. */
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         // The holder was created by onCreateViewHolder() for the type of this position
@@ -142,6 +153,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /** Number of rows: the visible comments, plus 1 for the post. */
     @Override
     public int getItemCount() {
         int size = visibleComments.size();
@@ -156,6 +168,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /** Type of the row at this position: the post at 0, then comments, or the "No comments yet" row. */
     @Override
     public int getItemViewType(int position) {
         if(position == 0 && hasHeader()){
@@ -167,6 +180,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /** Converts a position of the list into an index of visibleComments: the post takes position 0. */
     private int getCommentIndex(int position) {
         if (hasHeader()){
             return position - 1;
@@ -175,6 +189,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         }
     }
 
+    /** True once the post is loaded, the list then starts with it. */
     private boolean hasHeader() {
         return post != null;
     }
@@ -202,6 +217,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private final TextView score;
         private final TextView comments;
 
+        /** Finds the views of item_discussion_header.xml once, when the row is created. */
         HeaderViewHolder(View itemView) {
             super(itemView);
             community = itemView.findViewById(R.id.header_community);
@@ -218,6 +234,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             comments = itemView.findViewById(R.id.header_comments);
         }
 
+        /** Fills the header with the post: community, author, date, title, body, image or link, score. */
         void bind(Post post) {
             Context context = itemView.getContext();
 
@@ -257,6 +274,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             }
         }
 
+        /** Loads the image of an image post with Glide, hides the frame when there is none. */
         private void showImage(String url) {
             if (url == null) {
                 Glide.with(image).clear(image);
@@ -302,6 +320,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private final LinearLayout indent;
         private final LinearLayout box;
 
+        /** Finds the views of item_comment.xml once, when the row is created. */
         CommentViewHolder(View itemView) {
             super(itemView);
             author = itemView.findViewById(R.id.comment_author);
@@ -313,6 +332,12 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             box = itemView.findViewById(R.id.comment_box);
         }
 
+        /**
+         * Fills the row with a comment. A folded comment hides its text and shows "[+ N]".
+         * @param collapsed  true if the user folded this comment
+         * @param replyCount number of replies under it, at every depth
+         * @param onToggle   called on a click on [–] / [+ N]
+         */
         void bind(Comment comment, boolean collapsed, int replyCount, View.OnClickListener onToggle) {
             Context context = itemView.getContext();
 

@@ -45,6 +45,7 @@ public class DiscussionActivity extends AppCompatActivity {
         return intent;
     }
 
+    /** Sets up the toolbar, the list and its adapter, then starts loading the post. */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -97,6 +98,7 @@ public class DiscussionActivity extends AppCompatActivity {
         });
     }
 
+    /** Loads the comments once the post is shown. With no comment, the adapter shows "No comments yet". */
     private void loadComments() {
         LemmyApi.getInstance(this).getComments(postId, new ApiCallback<List<Comment>>() {
             @Override
