@@ -28,6 +28,7 @@
 
     <!-- Post list -->
     <string name="empty_posts">No posts yet</string>
+    <string name="post_pinned">📌 Pinned</string>
     <string name="time_now">just now</string>
     <string name="time_minutes">%1$dm ago</string>
     <string name="time_hours">%1$dh ago</string>

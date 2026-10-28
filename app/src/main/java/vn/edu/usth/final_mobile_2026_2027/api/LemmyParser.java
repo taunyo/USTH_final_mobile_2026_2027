@@ -181,6 +181,8 @@ public class LemmyParser {
         post.setScore(counts.optInt("score"));
         post.setNumComments(counts.optInt("comments"));
         post.setCreatedUtc(getDate(data, "published"));
+        // Lemmy always puts these posts first in their community, whatever the sort order
+        post.setPinned(data.optBoolean("featured_community"));
 
         // For an image post, url is the full size image (url_content_type is e.g. "image/jpeg").
         // For a link post it is a web page ("text/html"): no image then.

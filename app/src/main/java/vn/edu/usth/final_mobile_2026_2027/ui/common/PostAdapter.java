@@ -96,6 +96,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
      */
     public static class PostViewHolder extends RecyclerView.ViewHolder {
 
+        private final TextView pinned;
         private final TextView community;
         private final TextView author;
         private final TextView date;
@@ -106,6 +107,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         PostViewHolder(View itemView) {
             super(itemView);
+            pinned = itemView.findViewById(R.id.post_pinned);
             community = itemView.findViewById(R.id.post_community);
             author = itemView.findViewById(R.id.post_author);
             date = itemView.findViewById(R.id.post_date);
@@ -117,6 +119,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         void bind(Post post) {
             Context context = itemView.getContext();
+
+            // A pinned post comes first even with the "New" order: the label tells why
+            if (post.isPinned()) {
+                pinned.setVisibility(View.VISIBLE);
+            } else {
+                pinned.setVisibility(View.GONE);
+            }
 
             // Only the short names are displayed, the pages receive the full names (see the clicks)
             community.setText(context.getString(R.string.title_community, FormatUtils.shortName(post.getCommunity())));

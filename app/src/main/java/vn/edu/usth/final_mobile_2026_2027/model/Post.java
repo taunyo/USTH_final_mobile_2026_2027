@@ -17,6 +17,7 @@ public class Post {
     private int score;
     private int numComments;
     private long createdUtc;      // creation date in seconds since 01/01/1970
+    private boolean pinned;       // pinned at the top of its community by the moderators
 
     public int getId() {
         return id;
@@ -112,5 +113,13 @@ public class Post {
 
     public void setCreatedUtc(long createdUtc) {
         this.createdUtc = createdUtc;
+    }
+
+    public boolean isPinned() {
+        return pinned;
+    }
+
+    public void setPinned(boolean pinned) {
+        this.pinned = pinned;
     }
 }

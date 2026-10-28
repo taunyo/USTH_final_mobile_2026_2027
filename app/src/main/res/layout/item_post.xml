@@ -15,6 +15,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <!-- Shown by the adapter when the moderators pinned the post at the top of its community -->
+        <TextView
+            android:id="@+id/post_pinned"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@string/post_pinned"
+            android:textAppearance="?attr/textAppearanceLabelMedium"
+            android:textColor="?attr/colorPrimary"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
         <!-- Community, author and date on one line -->
         <LinearLayout
             android:layout_width="match_parent"
