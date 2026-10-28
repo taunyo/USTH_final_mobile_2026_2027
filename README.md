@@ -270,13 +270,13 @@ errorView.hide();
 
 ### Developer D: User profile, error messages, tests, QA
 
-- [ ] **D1** Day 1: save a real answer of each endpoint of [the 5 pages](#the-5-pages) in `app/src/test/resources/`, with users and communities of other instances among them. Everyone uses them to write their parser. Apply the `minSdk` chosen by the team
-- [ ] **D2** `LemmyParser.parseUser()` + `LemmyApi.getUser()` (`/user?username={name}`, the view is in `person_view`): full name (`getFullName()`), avatar (`person.avatar`), creation date (`person.published`), `counts.post_count`, `counts.comment_count`
-- [ ] **D3** `LemmyApi.getUserPosts()` (the same endpoint with `&sort=New`: the posts are in `posts`, so `parsePosts()` works as it is)
-- [ ] **D4** Profile: header in `activity_user_profile.xml` (round avatar, display name `person.display_name` or u/name, number of posts, number of comments, age of the account, a "Banned" label when `person.banned`) + posts with `PostAdapter`, "No posts" message. Show a message for an unknown user (HTTP 404)
-- [ ] **D5** Readable errors in `LemmyApi.getErrorMessage()`: read the `error` field of the answer (`error.networkResponse.data`) and show a clear message for `couldnt_find_community`, `couldnt_find_person`, `couldnt_find_post` and `rate_limit_error`. The other developers have nothing to change
-- [ ] **D6** Unit tests of `LemmyParser` with the answers saved in D1: `parsePosts` (full names, dates), `parseCommunities`, `parseCommunity`, `parsePost`, `parseComments` (order and depths), `parseUser`. Add `testImplementation("org.json:json:...")`: the `org.json` of Android doesn't work in local unit tests
-- [ ] **D7** Phase 4: run the test plan below, open a GitHub issue for each bug and assign it to the owner of the page, run `./gradlew lint` and fix the warnings with the owners
+- [x] **D1** Day 1: save a real answer of each endpoint of [the 5 pages](#the-5-pages) in `app/src/test/resources/`, with users and communities of other instances among them. Everyone uses them to write their parser. Apply the `minSdk` chosen by the team
+- [x] **D2** `LemmyParser.parseUser()` + `LemmyApi.getUser()` (`/user?username={name}`, the view is in `person_view`): full name (`getFullName()`), avatar (`person.avatar`), creation date (`person.published`), `counts.post_count`, `counts.comment_count`
+- [x] **D3** `LemmyApi.getUserPosts()` (the same endpoint with `&sort=New`: the posts are in `posts`, so `parsePosts()` works as it is)
+- [x] **D4** Profile: header in `activity_user_profile.xml` (round avatar, display name `person.display_name` or u/name, number of posts, number of comments, age of the account, a "Banned" label when `person.banned`) + posts with `PostAdapter`, "No posts" message. Show a message for an unknown user (HTTP 404)
+- [x] **D5** Readable errors in `LemmyApi.getErrorMessage()`: read the `error` field of the answer (`error.networkResponse.data`) and show a clear message for `couldnt_find_community`, `couldnt_find_person`, `couldnt_find_post` and `rate_limit_error`. The other developers have nothing to change
+- [x] **D6** Unit tests of `LemmyParser` with the answers saved in D1: `parsePosts` (full names, dates), `parseCommunities`, `parseCommunity`, `parsePost`, `parseComments` (order and depths), `parseUser`. Add `testImplementation("org.json:json:...")`: the `org.json` of Android doesn't work in local unit tests
+- [/] **D7** Phase 4: run the test plan below, open a GitHub issue for each bug and assign it to the owner of the page, run `./gradlew lint` and fix the warnings with the owners
 
 ### Phase 4: everyone
 
