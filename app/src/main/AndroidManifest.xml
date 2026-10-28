@@ -15,6 +15,7 @@
         android:theme="@style/Theme.USTH_final_mobile_2026_2027">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="locked"
             android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
@@ -25,12 +26,15 @@
         </activity>
         <activity
             android:name=".ui.community.CommunityActivity"
+            android:screenOrientation="locked"
             android:exported="false" />
         <activity
             android:name=".ui.discussion.DiscussionActivity"
+            android:screenOrientation="locked"
             android:exported="false" />
         <activity
             android:name=".ui.profile.UserProfileActivity"
+            android:screenOrientation="locked"
             android:exported="false" />
     </application>
 
