@@ -36,3 +36,9 @@ google-services.json
 
 # Personal documentation
 docs/superpowers
+
+# MacOS auto-generated files
+.DS_Store
+app/.DS_Store
+app/src/.DS_Store
+app/src/test/.DS_Store
