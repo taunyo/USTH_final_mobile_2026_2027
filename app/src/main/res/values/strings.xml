@@ -61,6 +61,10 @@
     <string name="error_network">Network error, check your internet connection</string>
     <string name="error_http">Lemmy returned an error (HTTP %1$d)</string>
     <string name="error_parsing">Unexpected answer from Lemmy</string>
+    <string name="error_couldnt_find_community">Community not found</string>
+    <string name="error_couldnt_find_person">User not found</string>
+    <string name="error_couldnt_find_post">Post not found</string>
+    <string name="error_rate_limit">Rate limit exceeded, please wait</string>
 
     <!-- User profile -->
     <string name="user_member_since">Member since %1$s</string>

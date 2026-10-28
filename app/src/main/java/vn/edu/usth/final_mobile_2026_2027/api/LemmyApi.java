@@ -13,6 +13,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -251,6 +252,23 @@ public class LemmyApi {
     private String getErrorMessage(VolleyError error) {
         if (error.networkResponse == null) {
             return context.getString(R.string.error_network);
+        }
+        try {
+            String json = readText(error.networkResponse);
+            JSONObject jsonObject = new JSONObject(json);
+            String lemmyError = jsonObject.optString("error");
+            switch (lemmyError) {
+                case "couldnt_find_community":
+                    return context.getString(R.string.error_couldnt_find_community);
+                case "couldnt_find_person":
+                    return context.getString(R.string.error_couldnt_find_person);
+                case "couldnt_find_post":
+                    return context.getString(R.string.error_couldnt_find_post);
+                case "rate_limit_error":
+                    return context.getString(R.string.error_rate_limit);
+            }
+        } catch (Exception ignored) {
+            // If parsing fails, fall back to HTTP status code
         }
         return context.getString(R.string.error_http, error.networkResponse.statusCode);
     }
