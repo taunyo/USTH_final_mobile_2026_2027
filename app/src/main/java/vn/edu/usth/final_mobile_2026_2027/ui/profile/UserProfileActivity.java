@@ -70,7 +70,7 @@ public class UserProfileActivity extends AppCompatActivity {
         username = getIntent().getStringExtra(EXTRA_USERNAME);
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setTitle(getString(R.string.title_user, username));
+        toolbar.setTitle(FormatUtils.shortName(username));
         toolbar.setNavigationOnClickListener(v -> finish());
 
         avatarImage = findViewById(R.id.avatar_image);
@@ -125,11 +125,15 @@ public class UserProfileActivity extends AppCompatActivity {
     }
 
     private void displayUser(User user) {
+        MaterialToolbar toolbar = findViewById(R.id.toolbar);
         String displayName = user.getDisplayName();
         if (displayName != null && !displayName.isEmpty()) {
             usernameText.setText(displayName);
+            toolbar.setTitle(displayName);
         } else {
-            usernameText.setText(getString(R.string.title_user, FormatUtils.shortName(user.getName())));
+            String shortName = FormatUtils.shortName(user.getName());
+            usernameText.setText(getString(R.string.title_user, shortName));
+            toolbar.setTitle(shortName);
         }
 
         memberSinceText.setText(getString(R.string.user_member_since, FormatUtils.formatTimeAgo(this, user.getCreatedUtc())));
