@@ -1,0 +1,18 @@
+{
+  "person_view": {
+    "person": {
+      "name": "alice",
+      "display_name": "Alice Wonderland",
+      "banned": false,
+      "published": "2025-01-01T00:00:00Z",
+      "avatar": "https://example.com/avatar.jpg",
+      "local": true,
+      "actor_id": "https://lemmy.world/u/alice"
+    },
+    "counts": {
+      "post_count": 12,
+      "comment_count": 34
+    }
+  },
+  "posts": []
+}

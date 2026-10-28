@@ -1,0 +1,28 @@
+{
+  "post_view": {
+    "post": {
+      "id": 1,
+      "name": "Test Post",
+      "body": "Test body",
+      "url": "https://example.com/image.jpg",
+      "url_content_type": "image/jpeg",
+      "thumbnail_url": "https://example.com/thumb.jpg",
+      "ap_id": "https://lemmy.world/post/1",
+      "published": "2026-10-25T08:22:47Z"
+    },
+    "creator": {
+      "name": "alice",
+      "local": true,
+      "actor_id": "https://lemmy.world/u/alice"
+    },
+    "community": {
+      "name": "technology",
+      "local": true,
+      "actor_id": "https://lemmy.world/c/technology"
+    },
+    "counts": {
+      "score": 10,
+      "comments": 5
+    }
+  }
+}

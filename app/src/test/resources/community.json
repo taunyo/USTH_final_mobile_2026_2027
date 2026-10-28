@@ -1,0 +1,16 @@
+{
+  "community_view": {
+    "community": {
+      "name": "technology",
+      "title": "Technology",
+      "description": "Tech discussions",
+      "nsfw": false,
+      "local": true,
+      "actor_id": "https://lemmy.world/c/technology",
+      "icon": "https://example.com/icon.jpg"
+    },
+    "counts": {
+      "subscribers": 1000
+    }
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "comments": [
+    {
+      "comment": {
+        "id": 10,
+        "content": "First comment",
+        "published": "2026-10-25T09:00:00Z",
+        "path": "0.10"
+      },
+      "creator": {
+        "name": "bob",
+        "local": true,
+        "actor_id": "https://lemmy.world/u/bob"
+      },
+      "counts": {
+        "score": 3
+      }
+    }
+  ]
+}
