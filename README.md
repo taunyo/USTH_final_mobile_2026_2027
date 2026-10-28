@@ -276,7 +276,7 @@ errorView.hide();
 - [x] **D4** Profile: header in `activity_user_profile.xml` (round avatar, display name `person.display_name` or u/name, number of posts, number of comments, age of the account, a "Banned" label when `person.banned`) + posts with `PostAdapter`, "No posts" message. Show a message for an unknown user (HTTP 404)
 - [x] **D5** Readable errors in `LemmyApi.getErrorMessage()`: read the `error` field of the answer (`error.networkResponse.data`) and show a clear message for `couldnt_find_community`, `couldnt_find_person`, `couldnt_find_post` and `rate_limit_error`. The other developers have nothing to change
 - [x] **D6** Unit tests of `LemmyParser` with the answers saved in D1: `parsePosts` (full names, dates), `parseCommunities`, `parseCommunity`, `parsePost`, `parseComments` (order and depths), `parseUser`. Add `testImplementation("org.json:json:...")`: the `org.json` of Android doesn't work in local unit tests
-- [/] **D7** Phase 4: run the test plan below, open a GitHub issue for each bug and assign it to the owner of the page, run `./gradlew lint` and fix the warnings with the owners
+- [x] **D7** Phase 4: run the test plan below, open a GitHub issue for each bug and assign it to the owner of the page, run `./gradlew lint` and fix the warnings with the owners
 
 ### Phase 4: everyone
 
