@@ -105,10 +105,8 @@ public class DiscussionActivity extends AppCompatActivity {
                     return;
                 }
                 progressBar.setVisibility(View.GONE);
+                // Without comments, the adapter shows "No comments yet" under the post
                 adapter.setComments(comments);
-                if (comments.isEmpty()) {
-                    errorView.showEmpty(getString(R.string.empty_comments));
-                }
             }
 
             @Override

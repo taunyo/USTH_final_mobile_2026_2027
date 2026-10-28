@@ -47,6 +47,9 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final Set<Integer> collapsedIds = new HashSet<>();
     private static final int TYPE_HEADER = 0;
     private static final int TYPE_COMMENT = 1;
+    private static final int TYPE_EMPTY = 2;
+    /** False until setComments() is called, so "No comments yet" is not shown while loading. */
+    private boolean commentsLoaded = false;
 
 
 
@@ -60,6 +63,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void setComments(List<Comment> newComments){
         comments.clear();
         comments.addAll(newComments);
+        commentsLoaded = true;
         collapsedIds.clear();
         updateVisibleComments();
         notifyDataSetChanged();
@@ -116,6 +120,10 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         if (viewType == TYPE_HEADER) {
             View view = inflater.inflate(R.layout.item_discussion_header, parent, false);
             return new HeaderViewHolder(view);
+        } else if (viewType == TYPE_EMPTY) {
+            // Nothing to fill: the text is already in the XML
+            View view = inflater.inflate(R.layout.item_comments_empty, parent, false);
+            return new RecyclerView.ViewHolder(view) { };
         } else {
             View view = inflater.inflate(R.layout.item_comment, parent, false);
             return new CommentViewHolder(view);
@@ -127,7 +135,7 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         // The holder was created by onCreateViewHolder() for the type of this position
         if (holder instanceof HeaderViewHolder) {
             ((HeaderViewHolder) holder).bind(post);
-        } else {
+        } else if (holder instanceof CommentViewHolder) {
             Comment comment = visibleComments.get(getCommentIndex(position));
             boolean collapsed = collapsedIds.contains(comment.getId());
             ((CommentViewHolder) holder).bind(comment, collapsed, countReplies(comment), v -> toggleCollapse(comment));
@@ -137,6 +145,10 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemCount() {
         int size = visibleComments.size();
+        if (showEmpty()) {
+            // The post, then the "No comments yet" row
+            return 2;
+        }
         if(!hasHeader()){
             return size;
         }else{
@@ -148,6 +160,8 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public int getItemViewType(int position) {
         if(position == 0 && hasHeader()){
             return TYPE_HEADER;
+        } else if (showEmpty()) {
+            return TYPE_EMPTY;
         } else{
             return TYPE_COMMENT;
         }
@@ -163,6 +177,11 @@ public class CommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private boolean hasHeader() {
         return post != null;
+    }
+
+    /** True when the comments are loaded and there is none. */
+    private boolean showEmpty() {
+        return hasHeader() && commentsLoaded && comments.isEmpty();
     }
 
     /**
