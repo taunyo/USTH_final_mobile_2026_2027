@@ -194,11 +194,6 @@ public class LemmyApi {
         }, callback);
     }
 
-    /** Posts written by a user: GET /user?username={username}&sort=New, in "posts" */
-    public void getUserPosts(String username, ApiCallback<List<Post>> callback) {
-        getUserPosts(username, 1, callback);
-    }
-
     /** Posts written by a user with pagination: GET /user?username={username}&sort=New&page={page}, in "posts" */
     public void getUserPosts(String username, int page, ApiCallback<List<Post>> callback) {
         String url = BASE_URL + "/user?username=" + Uri.encode(username) + "&sort=New&page=" + page;
